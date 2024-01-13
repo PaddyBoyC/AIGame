@@ -94,7 +94,7 @@ namespace AIGame.source
 
 
             #region Tilemap
-            map = new TmxMap("Content\\mainlevel1.tmx");
+            map = new TmxMap("Content\\mainlevel2.tmx");
             tileset = Content.Load<Texture2D>("mainTileset\\" + map.Tilesets[0].Name.ToString());
             int tileWidth = map.Tilesets[0].TileWidth;
             int tileHeight = map.Tilesets[0].TileHeight;
@@ -178,7 +178,7 @@ namespace AIGame.source
 
             foreach (var o in map.ObjectGroups["BirdSpawn"].Objects)
             {
-                birds.Add(new Bird(new Vector2((float)o.X, (float)o.Y), birdTextures[rnd.Next(2)], birds, player));
+                birds.Add(new Bird(new Vector2((float)o.X, (float)o.Y), birdTextures[rnd.Next(3)], birds, player));
             }
             #endregion
 
@@ -310,12 +310,12 @@ namespace AIGame.source
             player.Update();
 
             //y axis
-            foreach (var rect in collisionRects)
+            if (!player.isJumping)
             {
-                if (!player.isJumping)
-                {
-                    player.isFalling = true;
-                }
+                player.isFalling = true;
+            }
+            foreach (var rect in collisionRects)
+            {              
                 if (rect.Intersects(player.playerFallRect))
                 {
                     player.isFalling = false;

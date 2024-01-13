@@ -53,7 +53,7 @@ namespace AIGame.source
             const float biasFactor = 0.1f;
             const float tooCloseRange = 80;
             const float visionRange = 200;
-            const float maxSpeed = 1;
+            const float maxSpeed = 2;
             const float leftMargin = 0;
             const float topMargin = 0;
             const float rightMargin = 900;
@@ -125,7 +125,8 @@ namespace AIGame.source
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            anim.Draw(spriteBatch, position, gameTime);
+
+            anim.Draw(spriteBatch, position, gameTime, velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
         }
     }
 }

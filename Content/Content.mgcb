@@ -145,8 +145,8 @@
 /processorParam:TextureFormat=Color
 /build:mainCharacter/maincharacter_run.png
 
-#begin mainlevel1.tmx
-/copy:mainlevel1.tmx
+#begin mainlevel2.tmx
+/copy:mainlevel2.tmx
 
 #begin mainTileset/tilesetfull.png
 /importer:TextureImporter

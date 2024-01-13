@@ -45,6 +45,7 @@ namespace AIGame.source
             playerAnimation[1] = new Animation(runSprite, millisecondsPerFrame: 100);
             playerAnimation[2] = new Animation(jumpSprite, millisecondsPerFrame: 100);
             playerAnimation[3] = new Animation(fallSprite, millisecondsPerFrame: 600);
+
             hitbox = new Rectangle((int)position.X, (int)position.Y, 32, 25);
             playerFallRect = new Rectangle((int)position.X + 3, (int)position.Y + 32, 32, (int)fallSpeed);
         }
@@ -70,7 +71,7 @@ namespace AIGame.source
             hitbox.X = (int)position.X;
             hitbox.Y = (int)position.Y;
             playerFallRect.X = (int)position.X;
-            playerFallRect.Y = (int)(velocity.Y + 34);
+            playerFallRect.Y = (int)(position.Y + 34);
         }
         private void Move(KeyboardState keyboard)
         {
