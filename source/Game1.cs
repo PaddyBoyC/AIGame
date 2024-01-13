@@ -168,20 +168,17 @@ namespace AIGame.source
             #endregion
 
             #region Bird
+            List<(Texture2D, Texture2D)> birdTextures = new List<(Texture2D, Texture2D)>();
+            birdTextures.Add((Content.Load<Texture2D>("flockingEnemy\\parrot1_idle"), Content.Load<Texture2D>("flockingEnemy\\parrot1_flying")));
+            birdTextures.Add((Content.Load<Texture2D>("flockingEnemy\\parrot2_idle"), Content.Load<Texture2D>("flockingEnemy\\parrot2_flying")));
+            birdTextures.Add((Content.Load<Texture2D>("flockingEnemy\\parrot3_idle"), Content.Load<Texture2D>("flockingEnemy\\parrot3_flying")));
+
             birds = new List<Bird>();
-            birds.Add(new Bird(new Vector2(100, 100), enemyTexture, birds, player, new Vector2(1, 0)));
-            birds.Add(new Bird(new Vector2(200, 200), enemyTexture, birds, player, new Vector2(-1, 0)));
-            birds.Add(new Bird(new Vector2(100, 300), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(300, 200), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(400, 100), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(50, 300), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(50, 100), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(300, 50), enemyTexture, birds, player));
-            birds.Add(new Bird(new Vector2(300, 50), enemyTexture, birds, player));
+            birds.Add(new Bird(new Vector2(100, 100), birdTextures[0], birds, player, new Vector2(1, 0)));
             Random rnd = new Random();
             for (int i = 0; i < 20; i++)
             {
-                birds.Add(new Bird(new Vector2(rnd.Next(0, 800), rnd.Next(0, 500)), enemyTexture, birds, player));
+                birds.Add(new Bird(new Vector2(rnd.Next(0, 800), rnd.Next(0, 500)), birdTextures[rnd.Next(2)], birds, player));
             }
             #endregion
 

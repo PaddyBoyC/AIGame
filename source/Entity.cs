@@ -5,14 +5,6 @@ namespace AIGame.source
 {
     public abstract class Entity
     {
-        public enum currentAnimation
-        {
-            Idle,
-            Run,
-            Jumping,
-            Falling,
-            Flying,
-        }
 
         public Vector2 position;
         public Rectangle hitbox;

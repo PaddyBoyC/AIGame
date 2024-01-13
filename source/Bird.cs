@@ -12,18 +12,23 @@ namespace AIGame.source
     {
         public Vector2 velocity;
         private Animation anim;
+        private Animation sleepAnim;
+        private Animation awakeAnim;
         private List<Bird> birds;
         public bool Awake { get; private set; }
         private Player player;
         private Vector2? biasDirection;
 
-        public Bird(Vector2 position, Texture2D spriteSheet, List<Bird> birds, Player player, Vector2? biasDirection = null)
+        public Bird(Vector2 position, (Texture2D, Texture2D) spriteSheets,  List<Bird> birds, Player player, Vector2? biasDirection = null)
         {
             this.position = position;
             this.biasDirection = biasDirection;
             this.player = player;
             this.birds = birds;
-            anim = new Animation(spriteSheet);
+            sleepAnim = new Animation(spriteSheets.Item1, millisecondsPerFrame: 500);
+            awakeAnim = new Animation(spriteSheets.Item2, millisecondsPerFrame: 100);
+            anim = sleepAnim;
+
             velocity = new Vector2(0, -1);
             Awake = false;
         }
@@ -32,9 +37,10 @@ namespace AIGame.source
         {
             if (!Awake)
             {
-                if ((player.position - position).Length() < 200)
+                if ((player.position - position).Length() < 100)
                 {
                     Awake = true;
+                    anim = awakeAnim;
                     Random rnd = new Random();
                     velocity.X = rnd.NextSingle() * 2 - 1;
                 }

@@ -19,7 +19,7 @@ namespace AIGame.source
 
         public Enemy(Texture2D enemySpriteSheet, Rectangle pathway, Player player, float speed = 2)
         {
-            enemyAnim = new Animation(enemySpriteSheet);
+            enemyAnim = new Animation(enemySpriteSheet, millisecondsPerFrame: 150);
             this.pathway = pathway;
 
             position = new Vector2(pathway.X, pathway.Y);
@@ -90,9 +90,9 @@ namespace AIGame.source
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (isFacingRight)
-                enemyAnim.Draw(spriteBatch, position, gameTime, 150);
+                enemyAnim.Draw(spriteBatch, position, gameTime);
             else
-                enemyAnim.Draw(spriteBatch, position, gameTime, 150, SpriteEffects.FlipHorizontally);
+                enemyAnim.Draw(spriteBatch, position, gameTime, SpriteEffects.FlipHorizontally);
         }
     }
 }
