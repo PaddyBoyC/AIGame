@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="67">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="68">
  <editorsettings>
   <export target="mainTileset/mainlevel1.tmx" format="tmx"/>
  </editorsettings>
@@ -312,13 +312,13 @@
   <object id="31" x="193.981" y="322.014" width="156.056" height="28.0233"/>
  </objectgroup>
  <objectgroup id="5" name="EnemyPathways">
-  <object id="1" name="0" x="419.25" y="299.083" width="239.333" height="19"/>
+  <object id="1" name="0" x="412.795" y="292.325" width="239.333" height="19"/>
   <object id="2" name="1" x="483" y="822" width="123" height="22"/>
  </objectgroup>
  <objectgroup id="6" name="BirdSpawn">
-  <object id="62" name="3" x="289.939" y="308.303"/>
-  <object id="63" name="2" x="268.795" y="308.417"/>
-  <object id="64" name="1" x="247.25" y="308.553"/>
-  <object id="65" name="0" x="225.962" y="308.371"/>
+  <object id="62" name="3" x="305.606" y="201.636"/>
+  <object id="63" name="2" x="330.795" y="264.084"/>
+  <object id="64" name="1" x="265.583" y="232.22"/>
+  <object id="65" name="0" x="206.295" y="245.371"/>
  </objectgroup>
 </map>

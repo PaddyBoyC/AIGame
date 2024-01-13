@@ -174,11 +174,11 @@ namespace AIGame.source
             birdTextures.Add((Content.Load<Texture2D>("flockingEnemy\\parrot3_idle"), Content.Load<Texture2D>("flockingEnemy\\parrot3_flying")));
 
             birds = new List<Bird>();
-            birds.Add(new Bird(new Vector2(100, 100), birdTextures[0], birds, player, new Vector2(1, 0)));
             Random rnd = new Random();
-            for (int i = 0; i < 20; i++)
+
+            foreach (var o in map.ObjectGroups["BirdSpawn"].Objects)
             {
-                birds.Add(new Bird(new Vector2(rnd.Next(0, 800), rnd.Next(0, 500)), birdTextures[rnd.Next(2)], birds, player));
+                birds.Add(new Bird(new Vector2((float)o.X, (float)o.Y), birdTextures[rnd.Next(2)], birds, player));
             }
             #endregion
 
