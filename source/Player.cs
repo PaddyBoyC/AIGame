@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using static AIGame.source.Entity;
 
 namespace AIGame.source
@@ -18,26 +19,33 @@ namespace AIGame.source
         }
 
         public Vector2 velocity;
-        public Rectangle playerFallRect;
         public SpriteEffects effects;
 
-        public float playerSpeed = 2;
-        public float fallSpeed = 3f;
-        public float jumpSpeed = -10;
-        public float startY;
+        public float playerSpeed = 100;
+        public float fallAccel = 150;
+        public float maxFallSpeed = 50;
+        public float jumpSpeed = -160;
 
         public bool isFalling = true;
         public bool isJumping;
         public bool isShooting;
 
-        public Animation[] playerAnimation;
-        public CurrentAnimation playerAnimationController;
+        Animation[] playerAnimation;
+        CurrentAnimation playerAnimationController;
 
-        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite)
+        List<Rectangle> levelCollision;
+        
+
+        Vector2 hitboxOffset;
+
+        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, List<Rectangle> levelCollision)
         {
             playerAnimation = new Animation[4];
 
             this.position = position;
+            this.levelCollision = levelCollision;
+            this.position = new Vector2(0, 0);
+
             velocity = new Vector2();
             effects = SpriteEffects.None;
 
@@ -46,94 +54,140 @@ namespace AIGame.source
             playerAnimation[2] = new Animation(jumpSprite, millisecondsPerFrame: 100);
             playerAnimation[3] = new Animation(fallSprite, millisecondsPerFrame: 600);
 
-            hitbox = new Rectangle((int)position.X, (int)position.Y, 32, 25);
-            playerFallRect = new Rectangle((int)position.X + 3, (int)position.Y + 32, 32, (int)fallSpeed);
+            hitboxOffset = new Vector2(11, 11);
+            hitbox = new Rectangle((int)position.X + (int)hitboxOffset.X, (int)position.Y + (int)hitboxOffset.Y, 12, 21);
         }
-        public override void Update()
+
+        public override void Update(GameTime gameTime)
         {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             KeyboardState keyboard = Keyboard.GetState();
 
 
             playerAnimationController = CurrentAnimation.Idle;
-            position = velocity;
 
             isShooting = keyboard.IsKeyDown(Keys.Enter);
 
-            startY = position.Y;
             Move(keyboard);
-            Jump(keyboard);
-
-            if (isFalling)
+        
+            //apply x movement and check for collision
+            position.X += velocity.X * dt;
+            hitbox.X = (int)position.X + (int)hitboxOffset.X;
+            foreach (var rectangle in levelCollision)
             {
-                velocity.Y += fallSpeed;
+                if (hitbox.Intersects(rectangle))
+                {
+                    if (velocity.X > 0)
+                    {
+                        hitbox.X = rectangle.X - hitbox.Width - 1;
+                    }
+                    else
+                    {
+                        hitbox.X = rectangle.X + rectangle.Width + 1;
+                    }
+                    velocity.X = 0;
+                    position.X = hitbox.X - hitboxOffset.X;
+                }
+            }
+
+            if (isJumping)
+            {
+                playerAnimationController = CurrentAnimation.Jumping;
+            }
+            else
+            {
+                if (keyboard.IsKeyDown(Keys.Space) && IsGrounded())
+                {
+                    isJumping = true;
+                    isFalling = false;
+                    velocity.Y = jumpSpeed;
+                }
+            }
+
+            if (!IsGrounded())
+            {
+                velocity.Y += fallAccel * dt;
+            }                     
+
+            //apply y movement and check for collision
+            position.Y += velocity.Y * dt;
+            hitbox.Y = (int)position.Y + (int)hitboxOffset.Y;
+            foreach (var rectangle in levelCollision)
+            {
+                if (hitbox.Intersects(rectangle))
+                {
+                    if (velocity.Y > 0)
+                    {
+                        isFalling = false;
+                        isJumping = false;
+                        hitbox.Y = rectangle.Y - hitbox.Height;
+                    }
+                    else
+                    {
+                        hitbox.Y = rectangle.Y + rectangle.Height + 1;
+                    }
+                    velocity.Y = 0;                   
+                    position.Y = hitbox.Y - hitboxOffset.Y;
+                }
+            }
+
+            if (velocity.Y != 0)
+            {
                 playerAnimationController = CurrentAnimation.Falling;
             }
-            hitbox.X = (int)position.X;
-            hitbox.Y = (int)position.Y;
-            playerFallRect.X = (int)position.X;
-            playerFallRect.Y = (int)(position.Y + 34);
         }
+
         private void Move(KeyboardState keyboard)
         {
 
             if (keyboard.IsKeyDown(Keys.A))
             {
-                velocity.X -= playerSpeed;
+                velocity.X = -playerSpeed;
                 playerAnimationController = CurrentAnimation.Run;
                 effects = SpriteEffects.FlipHorizontally;
             }
-            if (keyboard.IsKeyDown(Keys.D))
+            else if (keyboard.IsKeyDown(Keys.D))
             {
-                velocity.X += playerSpeed;
+                velocity.X = playerSpeed;
                 playerAnimationController = CurrentAnimation.Run;
                 effects = SpriteEffects.None;
             }
-        }
-        private void Jump(KeyboardState keyboard)
-        {
-            if (isJumping)
-            {
-                velocity.Y += jumpSpeed;//Making it go up
-                jumpSpeed += 1f;
-                Move(keyboard);
-                playerAnimationController = CurrentAnimation.Jumping;
-
-                if (velocity.Y >= startY)
-                //If it's farther than ground
-                {
-                    velocity.Y = startY;
-                    isJumping = false;
-
-                }
-            }
             else
             {
-                if (keyboard.IsKeyDown(Keys.Space) && !isFalling)
+                velocity.X = 0;
+            }
+        }
+
+        private bool IsGrounded()
+        {
+            Rectangle feetRectangle = new Rectangle(hitbox.X, hitbox.Y + hitbox.Height, hitbox.Width, 3);
+            foreach (var rectangle in levelCollision)
+            {
+                if (feetRectangle.Intersects(rectangle))
                 {
-                    isJumping = true;
-                    isFalling = false;
-                    jumpSpeed = -10;//Give it upward thrust
+                    return true;
                 }
             }
-
+            return false;
         }
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
+            Vector2 intPosition = new Vector2((int)position.X, (int)position.Y);
             switch (playerAnimationController)
             {
                 case CurrentAnimation.Idle:
-                    playerAnimation[0].Draw(spriteBatch, position, gameTime, effects);
+                    playerAnimation[0].Draw(spriteBatch, intPosition, gameTime, effects);
                     break;
                 case CurrentAnimation.Run:
-                    playerAnimation[1].Draw(spriteBatch, position, gameTime, effects);
+                    playerAnimation[1].Draw(spriteBatch, intPosition, gameTime, effects);
                     break;
                 case CurrentAnimation.Jumping:
-                    playerAnimation[2].Draw(spriteBatch, position, gameTime, effects);
+                    playerAnimation[2].Draw(spriteBatch, intPosition, gameTime, effects);
 
                     break;
                 case CurrentAnimation.Falling:
-                    playerAnimation[3].Draw(spriteBatch, position, gameTime, effects);
+                    playerAnimation[3].Draw(spriteBatch, intPosition, gameTime, effects);
 
                     break;
             }

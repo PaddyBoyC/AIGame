@@ -131,7 +131,8 @@ namespace AIGame.source
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_idle"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_run"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_jump"),
-                Content.Load<Texture2D>("mainCharacter\\maincharacter_fall"));
+                Content.Load<Texture2D>("mainCharacter\\maincharacter_fall"),
+                collisionRects);
 
             #region Bullet
             bullets = new List<Bullet>();
@@ -221,7 +222,7 @@ namespace AIGame.source
             #region Enemy
             foreach (var enemy in enemies)
             {
-                enemy.Update();
+                enemy.Update(gameTime);
                 //isGameOver = enemy.hasHit(player.hitbox);
 
                 if (enemy.hasHit(player.hitbox))
@@ -239,7 +240,7 @@ namespace AIGame.source
             #region Bird
             foreach (var bird in birds)
             {
-                bird.Update();
+                bird.Update(gameTime);
             }
             #endregion
 
@@ -307,32 +308,7 @@ namespace AIGame.source
 
             #region Player Collision
             var initPos = player.position;
-            player.Update();
-
-            //y axis
-            if (!player.isJumping)
-            {
-                player.isFalling = true;
-            }
-            foreach (var rect in collisionRects)
-            {              
-                if (rect.Intersects(player.playerFallRect))
-                {
-                    player.isFalling = false;
-                    break;
-                }
-            }
-
-            //x axis
-            foreach (var rect in collisionRects)
-            {
-                if (rect.Intersects(player.hitbox))
-                {
-                    player.position.X = initPos.X;
-                    player.velocity.X = initPos.X;
-                    break;
-                }
-            }
+            player.Update(gameTime);
             #endregion
 
             #endregion

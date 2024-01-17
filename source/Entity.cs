@@ -9,7 +9,7 @@ namespace AIGame.source
         public Vector2 position;
         public Rectangle hitbox;
 
-        public abstract void Update();
+        public abstract void Update(GameTime gameTime);
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
     }

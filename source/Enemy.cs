@@ -39,7 +39,7 @@ namespace AIGame.source
         }
 
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             stateMachine.Update();
 

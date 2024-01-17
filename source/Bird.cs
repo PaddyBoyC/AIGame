@@ -33,7 +33,7 @@ namespace AIGame.source
             Awake = false;
         }
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             if (!Awake)
             {
@@ -57,7 +57,7 @@ namespace AIGame.source
             const float leftMargin = 0;
             const float topMargin = 0;
             const float rightMargin = 900;
-            const float bottomMargin = 500;
+            const float bottomMargin = 369;
 
             Vector2 close = Vector2.Zero;
             Vector2 velAverage = Vector2.Zero;
