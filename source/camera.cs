@@ -12,8 +12,16 @@ namespace AIGame.source
         public Matrix Follow(Rectangle target)
         {
             target.X = MathHelper.Clamp(target.X, (int)Game1.screenWidth / 2 - 270, (int)Game1.screenWidth / 2 + 170);
-            target.Y = MathHelper.Clamp(target.Y, (int)Game1.screenHeight / 4, (int)(Game1.screenHeight * 0.75f));
+            //target.Y = MathHelper.Clamp(target.Y, (int)Game1.screenHeight / 4, (int)(Game1.screenHeight * 0.75f));
 
+            if (target.Y < 500)
+            {
+                target.Y = 240;
+            }
+            else
+            {
+                target.Y = 700;
+            }
             Vector3 translation = new Vector3(-target.X -target.Width/2,
                                        -target.Y - target.Height/2, 0);
 
