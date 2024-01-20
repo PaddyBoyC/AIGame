@@ -148,6 +148,11 @@
 #begin mainlevel2.tmx
 /copy:mainlevel2.tmx
 
+#begin mainTileset/fakefloor.png
+/importer:
+/processor:
+/build:mainTileset/fakefloor.png
+
 #begin mainTileset/tilesetfull.png
 /importer:TextureImporter
 /processor:TextureProcessor

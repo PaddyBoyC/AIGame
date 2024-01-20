@@ -44,7 +44,6 @@ namespace AIGame.source
 
             this.position = position;
             this.levelCollisionFunc = levelCollisionFunc;
-            this.position = new Vector2(0, 0);
 
             velocity = new Vector2();
             effects = SpriteEffects.None;

@@ -33,7 +33,8 @@ namespace AIGame.source
         private TilemapManager tilemapManager;
         private Texture2D tileset;
         private List<Rectangle> collisionRects;
-        private Rectangle startRect;
+        private List<FakeFloor> fakeFloors;
+        private Vector2 startPos;
         private Rectangle endRect;
         #endregion
 
@@ -92,7 +93,6 @@ namespace AIGame.source
             _ui = new IMGUI();
             #endregion
 
-
             #region Tilemap
             map = new TmxMap("Content\\mainlevel2.tmx");
             tileset = Content.Load<Texture2D>("mainTileset\\" + map.Tilesets[0].Name.ToString());
@@ -105,6 +105,7 @@ namespace AIGame.source
 
             #region Collision
             collisionRects = new List<Rectangle>();
+            fakeFloors = new List<FakeFloor>();
 
             foreach(var o in map.ObjectGroups["Collisions"].Objects)
             {
@@ -112,22 +113,27 @@ namespace AIGame.source
                 {
                     collisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
                 }
-                if (o.Name == "Start")
-                {
-                    startRect = new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height);
-                }
-                if (o.Name == "End")
-                {
-                    endRect = new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height);
-                }
             }
+
+            foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
+            {
+                fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+
             #endregion
 
             _gameManager = new GameManager(endRect);
 
             #region Player
+            foreach (var o in map.ObjectGroups["Points"].Objects)
+            {
+                if (o.Name == "PlayerStart")
+                {
+                    startPos = new Vector2((int)o.X, (int)o.Y);
+                }
+            }
             player = new Player(
-                new Vector2(startRect.X, startRect.Y),
+                startPos,
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_idle"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_run"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_jump"),
@@ -313,6 +319,15 @@ namespace AIGame.source
 
             #endregion
 
+            #region FakeFloors
+
+            foreach (var fakefloor in fakeFloors)
+            {
+                fakefloor.Update(gameTime);
+            }
+
+            #endregion
+
             base.Update(gameTime);
         }
 
@@ -323,6 +338,11 @@ namespace AIGame.source
 
             _spriteBatch.Begin(transformMatrix : transformMatrix);
             tilemapManager.Draw(_spriteBatch);
+
+            foreach (var fakeFloor in fakeFloors)
+            {
+                fakeFloor.Draw(_spriteBatch, gameTime);
+            }
 
             #region Enemy
             foreach (var enemy in enemies)
@@ -347,6 +367,7 @@ namespace AIGame.source
             #endregion
 
             #endregion
+
             _spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
         }
@@ -370,6 +391,13 @@ namespace AIGame.source
                 if (hitbox.Intersects(rectangle))
                 {
                     return rectangle;
+                }
+            }
+            foreach (var fakeFloor in fakeFloors)
+            {
+                if (fakeFloor.hasHit(hitbox))
+                {
+                    return fakeFloor.hitbox;
                 }
             }
             return null;
