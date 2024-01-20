@@ -21,10 +21,10 @@ namespace AIGame.source
         public Vector2 velocity;
         public SpriteEffects effects;
 
-        public float playerSpeed = 100;
-        public float fallAccel = 150;
-        public float maxFallSpeed = 50;
-        public float jumpSpeed = -160;
+        public float playerSpeed = 150;
+        public float fallAccel = 1500;
+        public float maxFallSpeed = 950;
+        public float jumpSpeed = -400;
 
         public bool isFalling = true;
         public bool isJumping;
@@ -33,23 +33,23 @@ namespace AIGame.source
         Animation[] playerAnimation;
         CurrentAnimation playerAnimationController;
 
-        List<Rectangle> levelCollision;
-        
+        Func<Rectangle, Rectangle?> levelCollisionFunc;
+
 
         Vector2 hitboxOffset;
 
-        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, List<Rectangle> levelCollision)
+        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, Func<Rectangle, Rectangle?> levelCollisionFunc)
         {
             playerAnimation = new Animation[4];
 
             this.position = position;
-            this.levelCollision = levelCollision;
+            this.levelCollisionFunc = levelCollisionFunc;
             this.position = new Vector2(0, 0);
 
             velocity = new Vector2();
             effects = SpriteEffects.None;
 
-            playerAnimation[0] = new Animation(idleSprite, millisecondsPerFrame: 150);
+            playerAnimation[0] = new Animation(idleSprite, millisecondsPerFrame: 100);
             playerAnimation[1] = new Animation(runSprite, millisecondsPerFrame: 100);
             playerAnimation[2] = new Animation(jumpSprite, millisecondsPerFrame: 100);
             playerAnimation[3] = new Animation(fallSprite, millisecondsPerFrame: 600);
@@ -73,21 +73,19 @@ namespace AIGame.source
             //apply x movement and check for collision
             position.X += velocity.X * dt;
             hitbox.X = (int)position.X + (int)hitboxOffset.X;
-            foreach (var rectangle in levelCollision)
+            Rectangle? collidingRectangle = levelCollisionFunc(hitbox);
+            if(collidingRectangle.HasValue)
             {
-                if (hitbox.Intersects(rectangle))
+                if (velocity.X > 0)
                 {
-                    if (velocity.X > 0)
-                    {
-                        hitbox.X = rectangle.X - hitbox.Width - 1;
-                    }
-                    else
-                    {
-                        hitbox.X = rectangle.X + rectangle.Width + 1;
-                    }
-                    velocity.X = 0;
-                    position.X = hitbox.X - hitboxOffset.X;
+                    hitbox.X = collidingRectangle.Value.X - hitbox.Width - 1;
                 }
+                else
+                {
+                    hitbox.X = collidingRectangle.Value.X + collidingRectangle.Value.Width + 1;
+                }
+                velocity.X = 0;
+                position.X = hitbox.X - hitboxOffset.X;
             }
 
             if (isJumping)
@@ -112,23 +110,21 @@ namespace AIGame.source
             //apply y movement and check for collision
             position.Y += velocity.Y * dt;
             hitbox.Y = (int)position.Y + (int)hitboxOffset.Y;
-            foreach (var rectangle in levelCollision)
+            collidingRectangle = levelCollisionFunc(hitbox);
+            if (collidingRectangle.HasValue)
             {
-                if (hitbox.Intersects(rectangle))
+                if (velocity.Y > 0)
                 {
-                    if (velocity.Y > 0)
-                    {
-                        isFalling = false;
-                        isJumping = false;
-                        hitbox.Y = rectangle.Y - hitbox.Height;
-                    }
-                    else
-                    {
-                        hitbox.Y = rectangle.Y + rectangle.Height + 1;
-                    }
-                    velocity.Y = 0;                   
-                    position.Y = hitbox.Y - hitboxOffset.Y;
+                    isFalling = false;
+                    isJumping = false;
+                    hitbox.Y = collidingRectangle.Value.Y - hitbox.Height;
                 }
+                else
+                {
+                    hitbox.Y = collidingRectangle.Value.Y +collidingRectangle.Value.Height + 1;
+                }
+                velocity.Y = 0;                   
+                position.Y = hitbox.Y - hitboxOffset.Y;
             }
 
             if (velocity.Y != 0)
@@ -161,14 +157,7 @@ namespace AIGame.source
         private bool IsGrounded()
         {
             Rectangle feetRectangle = new Rectangle(hitbox.X, hitbox.Y + hitbox.Height, hitbox.Width, 3);
-            foreach (var rectangle in levelCollision)
-            {
-                if (feetRectangle.Intersects(rectangle))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return levelCollisionFunc(feetRectangle).HasValue;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

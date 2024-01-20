@@ -132,7 +132,7 @@ namespace AIGame.source
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_run"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_jump"),
                 Content.Load<Texture2D>("mainCharacter\\maincharacter_fall"),
-                collisionRects);
+                hitbox => CheckLevelCollision(hitbox));
 
             #region Bullet
             bullets = new List<Bullet>();
@@ -361,6 +361,18 @@ namespace AIGame.source
             _spriteBatch.End();
             _ui.Draw(gameTime);
             base.Draw(gameTime);
+        }
+
+        public Rectangle? CheckLevelCollision(Rectangle hitbox)
+        {
+            foreach (var rectangle in collisionRects)
+            {
+                if (hitbox.Intersects(rectangle))
+                {
+                    return rectangle;
+                }
+            }
+            return null;
         }
     }
 }
