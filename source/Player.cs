@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static AIGame.source.Entity;
 
 namespace AIGame.source
@@ -21,29 +22,33 @@ namespace AIGame.source
         public Vector2 velocity;
         public SpriteEffects effects;
 
-        public float playerSpeed = 150;
+        public float playerSpeed = 140;
         public float fallAccel = 1500;
         public float maxFallSpeed = 950;
         public float jumpSpeed = -400;
-
         public bool isFalling = true;
         public bool isJumping;
         public bool isShooting;
 
+        bool onIce = false;
+
+        private HashSet<InventoryObject> inventory;
+
         Animation[] playerAnimation;
         CurrentAnimation playerAnimationController;
 
-        Func<Rectangle, Rectangle?> levelCollisionFunc;
+        Func<Rectangle, Game1.LevelCollisionResult?> levelCollisionFunc;
 
 
         Vector2 hitboxOffset;
 
-        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, Func<Rectangle, Rectangle?> levelCollisionFunc)
+        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, Func<Rectangle, Game1.LevelCollisionResult?> levelCollisionFunc)
         {
             playerAnimation = new Animation[4];
 
             this.position = position;
             this.levelCollisionFunc = levelCollisionFunc;
+            inventory = new HashSet<InventoryObject>();
 
             velocity = new Vector2();
             effects = SpriteEffects.None;
@@ -67,21 +72,22 @@ namespace AIGame.source
 
             isShooting = keyboard.IsKeyDown(Keys.Enter);
 
-            Move(keyboard);
+            Move(keyboard, dt);
         
             //apply x movement and check for collision
             position.X += velocity.X * dt;
             hitbox.X = (int)position.X + (int)hitboxOffset.X;
-            Rectangle? collidingRectangle = levelCollisionFunc(hitbox);
-            if(collidingRectangle.HasValue)
+            var collisionResult = levelCollisionFunc(hitbox);
+            if (collisionResult.HasValue)
             {
+                var collidingRectangle = collisionResult.Value.rectangle;
                 if (velocity.X > 0)
                 {
-                    hitbox.X = collidingRectangle.Value.X - hitbox.Width - 1;
+                    hitbox.X = collidingRectangle.X - hitbox.Width - 1;
                 }
                 else
                 {
-                    hitbox.X = collidingRectangle.Value.X + collidingRectangle.Value.Width + 1;
+                    hitbox.X = collidingRectangle.X + collidingRectangle.Width + 1;
                 }
                 velocity.X = 0;
                 position.X = hitbox.X - hitboxOffset.X;
@@ -109,18 +115,20 @@ namespace AIGame.source
             //apply y movement and check for collision
             position.Y += velocity.Y * dt;
             hitbox.Y = (int)position.Y + (int)hitboxOffset.Y;
-            collidingRectangle = levelCollisionFunc(hitbox);
-            if (collidingRectangle.HasValue)
+            collisionResult = levelCollisionFunc(hitbox);
+            if (collisionResult.HasValue)
             {
+                var collidingRectangle = collisionResult.Value.rectangle;
                 if (velocity.Y > 0)
                 {
                     isFalling = false;
                     isJumping = false;
-                    hitbox.Y = collidingRectangle.Value.Y - hitbox.Height;
+                    hitbox.Y = collidingRectangle.Y - hitbox.Height;
+                    onIce = collisionResult.Value.slippery;
                 }
                 else
                 {
-                    hitbox.Y = collidingRectangle.Value.Y +collidingRectangle.Value.Height + 1;
+                    hitbox.Y = collidingRectangle.Y + collidingRectangle.Height + 1;
                 }
                 velocity.Y = 0;                   
                 position.Y = hitbox.Y - hitboxOffset.Y;
@@ -132,24 +140,33 @@ namespace AIGame.source
             }
         }
 
-        private void Move(KeyboardState keyboard)
+        private void Move(KeyboardState keyboard, float dt)
         {
+            float targetVel = 0;
+            float friction = IsGrounded() ? (onIce ? 1 : 8) : 4;
 
             if (keyboard.IsKeyDown(Keys.A))
             {
-                velocity.X = -playerSpeed;
+                targetVel = -playerSpeed;
                 playerAnimationController = CurrentAnimation.Run;
                 effects = SpriteEffects.FlipHorizontally;
             }
             else if (keyboard.IsKeyDown(Keys.D))
             {
-                velocity.X = playerSpeed;
+                targetVel = playerSpeed;
                 playerAnimationController = CurrentAnimation.Run;
                 effects = SpriteEffects.None;
             }
+            
+            if (velocity.X > targetVel)
+            {
+                velocity.X -= playerSpeed * dt * friction;
+                velocity.X = Math.Max(targetVel, velocity.X);
+            }
             else
             {
-                velocity.X = 0;
+                velocity.X += playerSpeed * dt * friction;
+                velocity.X = Math.Min(targetVel, velocity.X);
             }
         }
 
@@ -181,5 +198,9 @@ namespace AIGame.source
             }
 
         }
+
+        public void AddToInventory (InventoryObject obj) => inventory.Add(obj);
+
+        public bool HasPickaxe() => inventory.Any(obj => obj is Pickaxe);
     }
 }

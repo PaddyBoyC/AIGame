@@ -14,12 +14,12 @@ namespace AIGame.source
         private Texture2D texture;      
         private Player player;
         private float yVel = 0;
-        private bool falling = false;
+        public bool Falling { get; set; } = false;
 
         public FakeFloor(Texture2D texture, Rectangle hitbox, Player player)
         {
             this.texture = texture;
-
+            
             position = new Vector2(hitbox.X, hitbox.Y);
             base.hitbox = hitbox;
 
@@ -28,14 +28,18 @@ namespace AIGame.source
 
         public override void Update(GameTime gameTime)
         {
-            //falling = true;
-            if (falling)
+            if (Falling)
             {
                 float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 yVel += dt * 100;
                 position.Y += yVel * dt;
                 hitbox.Y = (int)position.Y;
 
+            }
+            else if(player.HasPickaxe() && (player.position - position).Length() < 80)
+            {
+                Falling = true;
+                //set player speed to 0, falls for ~5 seconds, then player can move again
             }
         }
 

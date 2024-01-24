@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
 using TiledSharp;
-using System.Security.AccessControl;
 
 namespace AIGame.source
 {
@@ -33,6 +32,7 @@ namespace AIGame.source
         private TilemapManager tilemapManager;
         private Texture2D tileset;
         private List<Rectangle> collisionRects;
+        private List<Rectangle> slipperyCollisionRects;
         private List<FakeFloor> fakeFloors;
         private Vector2 startPos;
         private Rectangle endRect;
@@ -59,10 +59,19 @@ namespace AIGame.source
         private List<Bird> birds;
         #endregion
 
-        //maybe implement comora instead
+        #region Bat
+        private List<Bat> bats;
+        #endregion
+
         #region Camera
         private camera camera;
         private Matrix transformMatrix;
+        #endregion
+
+        #region InventoryObjects
+
+        private HashSet<InventoryObject> levelObjects;
+
         #endregion
 
         public Game1()
@@ -105,6 +114,7 @@ namespace AIGame.source
 
             #region Collision
             collisionRects = new List<Rectangle>();
+            slipperyCollisionRects = new List<Rectangle>();
             fakeFloors = new List<FakeFloor>();
 
             foreach(var o in map.ObjectGroups["Collisions"].Objects)
@@ -115,21 +125,32 @@ namespace AIGame.source
                 }
             }
 
-            foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
+            foreach (var o in map.ObjectGroups["SlippyFloors"].Objects)
             {
-                fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+                if (o.Name == "")
+                {
+                    slipperyCollisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
+                }
             }
-
             #endregion
 
             _gameManager = new GameManager(endRect);
 
             #region Player
+
+            levelObjects = new HashSet<InventoryObject>();
+
             foreach (var o in map.ObjectGroups["Points"].Objects)
             {
+                var pos = new Vector2((int)o.X, (int)o.Y);
+
                 if (o.Name == "PlayerStart")
                 {
-                    startPos = new Vector2((int)o.X, (int)o.Y);
+                    startPos = pos;
+                }
+                else if (o.Name == "pickaxe")
+                {
+                    levelObjects.Add(new Pickaxe(pos, Content.Load<Texture2D>("mainCharacter\\pickaxe")));
                 }
             }
             player = new Player(
@@ -188,6 +209,29 @@ namespace AIGame.source
                 birds.Add(new Bird(new Vector2((float)o.X, (float)o.Y), birdTextures[rnd.Next(3)], birds, player));
             }
             #endregion
+
+            #region Bat
+            List<(Texture2D, Texture2D)> batTextures = new List<(Texture2D, Texture2D)>();
+            batTextures.Add((Content.Load<Texture2D>("flockingEnemy\\bat_idle"), Content.Load<Texture2D>("flockingEnemy\\bat_flying")));
+
+            bats = new List<Bat>();
+
+            foreach (var o in map.ObjectGroups["BatSpawn"].Objects)
+            {
+                bats.Add(new Bat(new Vector2((float)o.X, (float)o.Y), batTextures[rnd.Next(1)], bats, player));
+            }
+
+            #endregion
+
+            foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
+            {
+                fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+
+            foreach (var o in map.ObjectGroups["SlippyFloors"].Objects)
+            {
+
+            }
 
             renderTarget = new RenderTarget2D(GraphicsDevice, 960, 850);
         }
@@ -250,13 +294,18 @@ namespace AIGame.source
             }
             #endregion
 
+            #region Bat
+            foreach (var bat in bats)
+            {
+                bat.Update(gameTime);
+            }
+            #endregion
+
             #region Camera update
             Rectangle target = new Rectangle((int)player.position.X, (int)player.position.Y, 32, 32);
             transformMatrix = camera.Follow(target);
 
             #endregion
-
-            #region Player
 
             #region Bullet
 
@@ -289,14 +338,11 @@ namespace AIGame.source
             {
                 bullet.Update();
 
-                foreach (var rect in collisionRects)
+                if(CheckLevelCollision(bullet.hitbox).HasValue)
                 {
-                    if (rect.Intersects(bullet.hitbox))
-                    {
-                        bullets.Remove(bullet);
-                        break;
-                    }
+                    bullets.Remove(bullet);                   
                 }
+
                 foreach (var enemy in enemies.ToArray())
                 {
                     if (bullet.hitbox.Intersects(enemy.hitbox))
@@ -311,12 +357,23 @@ namespace AIGame.source
 
             #endregion
 
-
-            #region Player Collision
-            var initPos = player.position;
+            #region Player
             player.Update(gameTime);
-            #endregion
 
+            //check for picking up inventory object
+            HashSet<InventoryObject> overlappingObjects = new();
+            foreach (var obj in levelObjects)
+            {
+                if (player.hitbox.Intersects(obj.hitbox))
+                {
+                    overlappingObjects.Add(obj);
+                    player.AddToInventory(obj);
+                }
+            }
+            foreach (var obj in overlappingObjects)
+            {
+                levelObjects.Remove(obj);
+            }
             #endregion
 
             #region FakeFloors
@@ -356,6 +413,22 @@ namespace AIGame.source
                 bird.Draw(_spriteBatch, gameTime);
             }
             #endregion
+            #region Bat
+            foreach (var bat in bats)
+            {
+                bat.Draw(_spriteBatch, gameTime);
+            }
+            #endregion
+
+            #region InventoryObjects
+
+            foreach (var obj in levelObjects)
+            {
+                obj.Draw(_spriteBatch, gameTime);
+            }
+
+            #endregion
+
             #region Player
             player.Draw(_spriteBatch, gameTime);
 
@@ -384,20 +457,39 @@ namespace AIGame.source
             base.Draw(gameTime);
         }
 
-        public Rectangle? CheckLevelCollision(Rectangle hitbox)
+        public struct LevelCollisionResult
+        {
+            public Rectangle rectangle;
+            public bool slippery;
+
+            public LevelCollisionResult(Rectangle rectangle, bool slippery)
+            {
+                this.rectangle = rectangle;
+                this.slippery = slippery;
+            }
+        }
+
+        public LevelCollisionResult? CheckLevelCollision(Rectangle hitbox)
         {
             foreach (var rectangle in collisionRects)
             {
                 if (hitbox.Intersects(rectangle))
                 {
-                    return rectangle;
+                    return new LevelCollisionResult(rectangle, false);
                 }
             }
             foreach (var fakeFloor in fakeFloors)
             {
                 if (fakeFloor.hasHit(hitbox))
                 {
-                    return fakeFloor.hitbox;
+                    return new LevelCollisionResult(fakeFloor.hitbox, false);
+                }
+            }
+            foreach (var slippyFloor in slipperyCollisionRects)
+            {
+                if (slippyFloor.Intersects(hitbox))
+                {
+                    return new LevelCollisionResult(slippyFloor, true);
                 }
             }
             return null;
