@@ -17,7 +17,7 @@ namespace AIGame.source
         private StateMachine stateMachine;
         private Player player;
 
-        public Enemy(Texture2D enemySpriteSheet, Rectangle pathway, Player player, float speed = 2)
+        public Enemy(Texture2D enemySpriteSheet, Rectangle pathway, Player player, float speed = 1)
         {
             enemyAnim = new Animation(enemySpriteSheet, millisecondsPerFrame: 150);
             this.pathway = pathway;
