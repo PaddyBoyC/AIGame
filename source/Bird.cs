@@ -37,7 +37,7 @@ namespace AIGame.source
         {
             if (!Awake)
             {
-                if ((player.position - position).Length() < 100)
+                if ((player.position - position).Length() < 50)
                 {
                     Awake = true;
                     anim = awakeAnim;
