@@ -36,11 +36,18 @@ namespace AIGame.source
                 hitbox.Y = (int)position.Y;
 
             }
-            else if(player.HasPickaxe() && (player.position - position).Length() < 80)
-            {
-                Falling = true;
-                //set player speed to 0, falls for ~5 seconds, then player can move again
-            }
+            //else if(player.HasPickaxe() && (player.position - position).Length() < 80)
+            //{
+            //    Falling = true;
+            //    //set player speed to 0, falls for ~5 seconds, then player can move again
+            //    player.FreezeTimer = 5;
+            //}
+        }
+
+        public void StoodOn()
+        {
+            Falling = true;
+            player.FreezeTimer = 5;
         }
 
         public bool hasHit(Rectangle playerRect)

@@ -17,7 +17,7 @@ namespace AIGame.source
         {
             this.position = position;
             this.sprite = sprite;  
-            this.hitbox = new Rectangle((int)position.X, (int)position.Y, 64, 32);
+            this.hitbox = new Rectangle((int)position.X, (int)position.Y, 32, 32);
 
         }
 
@@ -32,3 +32,4 @@ namespace AIGame.source
         }
     }
 }
+

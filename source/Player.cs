@@ -32,6 +32,8 @@ namespace AIGame.source
 
         bool onIce = false;
 
+        public float FreezeTimer { get; set; }
+
         private HashSet<InventoryObject> inventory;
 
         Animation[] playerAnimation;
@@ -65,8 +67,14 @@ namespace AIGame.source
         public override void Update(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            KeyboardState keyboard = Keyboard.GetState();
 
+            FreezeTimer -= dt;
+            if (FreezeTimer > 0)
+            {
+                return;
+            }
+
+            KeyboardState keyboard = Keyboard.GetState();
 
             playerAnimationController = CurrentAnimation.Idle;
 
@@ -91,6 +99,10 @@ namespace AIGame.source
                 }
                 velocity.X = 0;
                 position.X = hitbox.X - hitboxOffset.X;
+                if (collisionResult.Value.door != null && Has<Key>())
+                {
+                    collisionResult.Value.door.Unlock();
+                }
             }
 
             if (isJumping)
@@ -125,6 +137,10 @@ namespace AIGame.source
                     isJumping = false;
                     hitbox.Y = collidingRectangle.Y - hitbox.Height;
                     onIce = collisionResult.Value.slippery;
+                    if (collisionResult.Value.fakeFloor != null && Has<Pickaxe>())
+                    {
+                        collisionResult.Value.fakeFloor.StoodOn();
+                    }                  
                 }
                 else
                 {
@@ -201,6 +217,6 @@ namespace AIGame.source
 
         public void AddToInventory (InventoryObject obj) => inventory.Add(obj);
 
-        public bool HasPickaxe() => inventory.Any(obj => obj is Pickaxe);
+        public bool Has<T>() => inventory.Any(obj => obj is T);
     }
 }

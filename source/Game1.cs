@@ -34,6 +34,7 @@ namespace AIGame.source
         private List<Rectangle> collisionRects;
         private List<Rectangle> slipperyCollisionRects;
         private List<FakeFloor> fakeFloors;
+        private List<Door> doors;
         private Vector2 startPos;
         private Rectangle endRect;
         #endregion
@@ -52,7 +53,6 @@ namespace AIGame.source
         #region Enemy
         private List<Enemy> enemies;
         private List<Rectangle> enemyPathway;
-        private List<Rectangle> birdSpawn;
         #endregion
 
         #region Bird
@@ -112,30 +112,6 @@ namespace AIGame.source
             tilemapManager = new TilemapManager(map, tileset, tilesetTileWidth, tileWidth, tileHeight, GraphicsDevice, _spriteBatch);
             #endregion
 
-            #region Collision
-            collisionRects = new List<Rectangle>();
-            slipperyCollisionRects = new List<Rectangle>();
-            fakeFloors = new List<FakeFloor>();
-
-            foreach(var o in map.ObjectGroups["Collisions"].Objects)
-            {
-                if (o.Name == "")
-                {
-                    collisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
-                }
-            }
-
-            foreach (var o in map.ObjectGroups["SlippyFloors"].Objects)
-            {
-                if (o.Name == "")
-                {
-                    slipperyCollisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
-                }
-            }
-            #endregion
-
-            _gameManager = new GameManager(endRect);
-
             #region Player
 
             levelObjects = new HashSet<InventoryObject>();
@@ -151,6 +127,10 @@ namespace AIGame.source
                 else if (o.Name == "pickaxe")
                 {
                     levelObjects.Add(new Pickaxe(pos, Content.Load<Texture2D>("mainCharacter\\pickaxe")));
+                }
+                else if (o.Name == "key")
+                {
+                    levelObjects.Add(new Key(pos, Content.Load<Texture2D>("mainCharacter\\key")));
                 }
             }
             player = new Player(
@@ -168,6 +148,45 @@ namespace AIGame.source
 
             #endregion
 
+            #region Collision
+            collisionRects = new List<Rectangle>();
+            slipperyCollisionRects = new List<Rectangle>();
+            fakeFloors = new List<FakeFloor>();
+            doors = new List<Door>();
+
+
+            foreach (var o in map.ObjectGroups["Collisions"].Objects)
+            {
+                if (o.Name == "")
+                {
+                    collisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
+                }
+            }
+
+            foreach (var o in map.ObjectGroups["SlippyFloors"].Objects)
+            {
+                if (o.Name == "")
+                {
+                    slipperyCollisionRects.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
+                }
+            }
+
+            foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
+            {
+                fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+
+            foreach (var o in map.ObjectGroups["LockedDoor"].Objects)
+            {
+                Animation dooranim = new Animation(Content.Load<Texture2D>("maincharacter\\icedoorunlocking"), millisecondsPerFrame : 50);
+                dooranim.Playing = false;
+                dooranim.Loop = false;
+                doors.Add(new Door(dooranim, new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+            #endregion
+
+            _gameManager = new GameManager(endRect);
+
             #region Camera
             camera = new camera();
             #endregion
@@ -178,21 +197,44 @@ namespace AIGame.source
             {
                 enemyPathway.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
             }
-            Texture2D enemyTexture = Content.Load<Texture2D>("statemachineEnemy\\2 - Martian_Red_Running (32 x 32)");
+            //Texture2D enemyTexture = Content.Load<Texture2D>("statemachineEnemy\\2 - Martian_Red_Running (32 x 32)");
+            Texture2D spiderTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_walking");
+            Texture2D spiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_alert");
             enemies = new List<Enemy>();
             Enemy martian = new Enemy(
-               enemyTexture,
+               spiderTexture, spiderAlertTexture,
                enemyPathway[0],
                player
                 );
 
             enemies.Add(martian);
             martian = new Enemy(
-               enemyTexture,
+               spiderTexture, spiderAlertTexture,
                enemyPathway[1],
                player
                 );
+
             enemies.Add(martian);
+            martian = new Enemy(
+               spiderTexture, spiderAlertTexture,
+               enemyPathway[2],
+               player
+                );
+            enemies.Add(martian);
+
+            Enemy spider = new Enemy(
+               spiderTexture, spiderAlertTexture,
+               enemyPathway[3],
+               player
+                );
+            enemies.Add(spider);
+
+            spider = new Enemy(
+               spiderTexture, spiderAlertTexture,
+               enemyPathway[4],
+               player
+                );
+            enemies.Add(spider);
             #endregion
 
             #region Bird
@@ -222,16 +264,6 @@ namespace AIGame.source
             }
 
             #endregion
-
-            foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
-            {
-                fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
-            }
-
-            foreach (var o in map.ObjectGroups["SlippyFloors"].Objects)
-            {
-
-            }
 
             renderTarget = new RenderTarget2D(GraphicsDevice, 960, 850);
         }
@@ -385,7 +417,12 @@ namespace AIGame.source
 
             #endregion
 
-            base.Update(gameTime);
+            #region Door
+            foreach (var door in doors)
+            {
+               door.Update(gameTime);
+            }
+            #endregion
         }
 
         public void DrawLevel(GameTime gameTime)
@@ -399,6 +436,11 @@ namespace AIGame.source
             foreach (var fakeFloor in fakeFloors)
             {
                 fakeFloor.Draw(_spriteBatch, gameTime);
+            }
+
+            foreach (var door in doors)
+            {
+                door.Draw(_spriteBatch, gameTime);
             }
 
             #region Enemy
@@ -461,11 +503,15 @@ namespace AIGame.source
         {
             public Rectangle rectangle;
             public bool slippery;
+            public FakeFloor fakeFloor;
+            public Door door;
 
-            public LevelCollisionResult(Rectangle rectangle, bool slippery)
+            public LevelCollisionResult(Rectangle rectangle, bool slippery = false, FakeFloor fakeFloor = null, Door door = null)
             {
                 this.rectangle = rectangle;
                 this.slippery = slippery;
+                this.fakeFloor = fakeFloor;
+                this.door = door;
             }
         }
 
@@ -475,21 +521,28 @@ namespace AIGame.source
             {
                 if (hitbox.Intersects(rectangle))
                 {
-                    return new LevelCollisionResult(rectangle, false);
+                    return new LevelCollisionResult(rectangle);
                 }
             }
             foreach (var fakeFloor in fakeFloors)
             {
                 if (fakeFloor.hasHit(hitbox))
                 {
-                    return new LevelCollisionResult(fakeFloor.hitbox, false);
+                    return new LevelCollisionResult(fakeFloor.hitbox, fakeFloor : fakeFloor);
                 }
             }
             foreach (var slippyFloor in slipperyCollisionRects)
             {
                 if (slippyFloor.Intersects(hitbox))
                 {
-                    return new LevelCollisionResult(slippyFloor, true);
+                    return new LevelCollisionResult(slippyFloor, slippery : true);
+                }
+            }
+            foreach (var door in doors)
+            {
+                if (door.hasHit(hitbox))
+                {
+                    return new LevelCollisionResult(door.hitbox, door : door);
                 }
             }
             return null;

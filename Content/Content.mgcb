@@ -253,6 +253,30 @@
 /processorParam:TextureFormat=Color
 /build:healthbars/health9.png
 
+#begin mainCharacter/icedoorunlocking.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mainCharacter/icedoorunlocking.png
+
+#begin mainCharacter/key.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mainCharacter/key.png
+
 #begin mainCharacter/maincharacter_fall.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -378,6 +402,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:statemachineEnemy/2 - Martian_Red_Running (32 x 32).png
+
+#begin statemachineEnemy/spider_alert.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/spider_alert.png
 
 #begin statemachineEnemy/spider_walking.png
 /importer:TextureImporter

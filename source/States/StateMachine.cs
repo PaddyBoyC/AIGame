@@ -23,6 +23,8 @@ namespace AIGame.source.States
             currentState = newState;
         }
 
+        public State GetState => currentState;
+
         public void Update()
         {
             if (stateTransitions.ContainsKey(currentState))

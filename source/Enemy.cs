@@ -11,15 +11,19 @@ namespace AIGame.source
     public class Enemy : Entity
     {
         private Animation enemyAnim;
+        private Animation enemyAlertAnim;
         private Rectangle pathway;
         private float speed = 2;
         private bool isFacingRight = true;
         private StateMachine stateMachine;
         private Player player;
+        State patrollingState;
+        State attackingState;
 
-        public Enemy(Texture2D enemySpriteSheet, Rectangle pathway, Player player, float speed = 1)
+        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Rectangle pathway, Player player, float speed = 1)
         {
-            enemyAnim = new Animation(enemySpriteSheet, millisecondsPerFrame: 150);
+            enemyAnim = new Animation(spriteSheet, millisecondsPerFrame: 100);
+            enemyAlertAnim = new Animation(alertSpriteSheet, millisecondsPerFrame: 100);
             this.pathway = pathway;
 
             position = new Vector2(pathway.X, pathway.Y);
@@ -28,8 +32,8 @@ namespace AIGame.source
 
             this.player = player;
 
-            var patrollingState = new StateEnemyPatrol(this);
-            var attackingState = new StateEnemyAttack(this);
+            patrollingState = new StateEnemyPatrol(this);
+            attackingState = new StateEnemyAttack(this);
             var transitionPlayerDistance = new TransitionPlayerDistance(this, player, 100, true);
             var transitionPlayerFarAway = new TransitionPlayerDistance(this, player, 200, false);
             var transitions = new Dictionary<State, List<(Transition, State)>>();
@@ -89,10 +93,11 @@ namespace AIGame.source
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (isFacingRight)
-                enemyAnim.Draw(spriteBatch, position, gameTime);
-            else
-                enemyAnim.Draw(spriteBatch, position, gameTime, SpriteEffects.FlipHorizontally);
+            SpriteEffects effect = isFacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            Animation animation = stateMachine.GetState == patrollingState ? enemyAnim : enemyAlertAnim;
+
+            animation.Draw(spriteBatch, position, gameTime, effect);
         }
     }
 }

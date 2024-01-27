@@ -16,6 +16,8 @@ namespace AIGame.source
         int c = 0;
         float timeSinceLastFrame = 0;
         float millisecondsPerFrame;
+        public bool Playing { get; set; } = true;
+        public bool Loop { get; set; } = true;  
 
         public Animation(Texture2D spritesheet, float width = 32, float height = 32, float millisecondsPerFrame = 500)
         {
@@ -30,18 +32,26 @@ namespace AIGame.source
             {
                 var rect = new Rectangle(32 * c, rows, 32, 32);
                 spriteBatch.Draw(spritesheet, position, rect, Color.White, 0f, new Vector2(), 1f, effect, 1);
-                timeSinceLastFrame += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (timeSinceLastFrame > millisecondsPerFrame)
+                if (Playing)
                 {
-                    timeSinceLastFrame -= millisecondsPerFrame;
-                    c++;
-                    if (c == frames)
+                    timeSinceLastFrame += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (timeSinceLastFrame > millisecondsPerFrame)
                     {
-                        c = 0;
+                        timeSinceLastFrame -= millisecondsPerFrame;
+                        c++;
+                        if (c == frames)
+                        {
+                            c = Loop ? 0 : frames - 1;
+                        }
                     }
-                }
+                }              
             }
             
+        }
+
+        public bool AtEnd()
+        {
+            return c == frames - 1;
         }
     }
 }
