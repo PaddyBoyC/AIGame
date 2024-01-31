@@ -15,6 +15,12 @@ namespace AIGame.source
         private SpriteBatch _spriteBatch;
         private RenderTarget2D renderTarget;
 
+        private Texture2D blackSquare;
+        private float fadeAmount = 0;
+        private bool gameOver = false;
+
+        private Rectangle endZone;
+
         public static float screenWidth;
         public static float screenHeight;
 
@@ -99,6 +105,8 @@ namespace AIGame.source
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            blackSquare = Content.Load<Texture2D>("blacksquare");
 
             #region UI
             FontSystem fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
@@ -187,6 +195,13 @@ namespace AIGame.source
                 dooranim.Playing = false;
                 dooranim.Loop = false;
                 doors.Add(new Door(dooranim, new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+            foreach (var o in map.ObjectGroups["zones"].Objects)
+            {
+                if (o.Name == "endZone")
+                {
+                    endZone = new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height);
+                }
             }
             #endregion
 
@@ -360,6 +375,15 @@ namespace AIGame.source
                 Label.Put("Game Over!");
                 Label.Put("Press Enter to try again");
                 // delete player sprite, set playerspeed to 0, pressing enter restarts entire game
+                gameOver = true;
+            }
+            if (gameOver)
+            {
+                fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
+                if (fadeAmount > 1)
+                {
+                    fadeAmount = 1;
+                }
             }
             #endregion
             Panel.Pop();
@@ -478,6 +502,10 @@ namespace AIGame.source
             {
                 levelObjects.Remove(obj);
             }
+            if(player.hitbox.Intersects(endZone))
+            {
+                gameOver = true;
+            }
             #endregion
 
             #region FakeFloors
@@ -553,19 +581,28 @@ namespace AIGame.source
             }
             #endregion
 
-            #endregion
-
+            #endregion           
+            
             _spriteBatch.End();
+
+            if (fadeAmount > 0)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(blackSquare, new Rectangle(0, 0, (int)screenWidth, (int)screenHeight), Color.White * fadeAmount); //fades to black when dead
+                _spriteBatch.End();
+            }
+
             GraphicsDevice.SetRenderTarget(null);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            DrawLevel(gameTime);
+            DrawLevel(gameTime);         
 
             _spriteBatch.Begin(samplerState : SamplerState.PointClamp);
 
             _spriteBatch.Draw(renderTarget, new Vector2(0, 0), null, Color.White, 0f, new Vector2(), 2f, SpriteEffects.None, 0);
+
             _spriteBatch.End();
             _ui.Draw(gameTime);
             base.Draw(gameTime);

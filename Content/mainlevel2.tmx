@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="32" nextobjectid="283">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="34" nextobjectid="284">
  <tileset firstgid="1" name="tilesetfull" tilewidth="16" tileheight="16" tilecount="40000" columns="200">
   <image source="../../../../OneDrive/Desktop/PyxelEdit/tilesetfull.png" width="3200" height="3200"/>
  </tileset>
+ <objectgroup id="33" name="zones">
+  <object id="283" name="endZone" x="946" y="1248.33" width="59.6667" height="47.6667"/>
+ </objectgroup>
  <layer id="14" name="FarGround" width="60" height="90">
   <data encoding="csv">
 16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
@@ -1293,7 +1296,7 @@
   <object id="258" x="608" y="1136" width="64" height="32"/>
  </objectgroup>
  <objectgroup id="24" name="Points">
-  <object id="160" name="PlayerStart" x="32.925" y="284.37">
+  <object id="160" name="PlayerStart" x="98.925" y="1037.7">
    <point/>
   </object>
   <object id="180" name="pickaxe" x="625.955" y="567.409">
