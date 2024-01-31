@@ -12,6 +12,8 @@ namespace AIGame.source
     {
         private Animation enemyAnim;
         private Animation enemyAlertAnim;
+        private Animation deadAnim;
+        public bool Dead { get; set; } = false;
         private Rectangle pathway;
         private float speed = 2;
         private bool isFacingRight = true;
@@ -19,11 +21,14 @@ namespace AIGame.source
         private Player player;
         State patrollingState;
         State attackingState;
+        State deadState;
 
-        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Rectangle pathway, Player player, float speed = 1)
+        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Texture2D deadSpriteSheet, Rectangle pathway, Player player, float speed = 1)
         {
             enemyAnim = new Animation(spriteSheet, millisecondsPerFrame: 100);
             enemyAlertAnim = new Animation(alertSpriteSheet, millisecondsPerFrame: 100);
+            deadAnim = new Animation(deadSpriteSheet, millisecondsPerFrame: 100);
+            deadAnim.Loop = false;
             this.pathway = pathway;
 
             position = new Vector2(pathway.X, pathway.Y);
@@ -34,11 +39,13 @@ namespace AIGame.source
 
             patrollingState = new StateEnemyPatrol(this);
             attackingState = new StateEnemyAttack(this);
+            deadState = new StateEnemyDead(this);
             var transitionPlayerDistance = new TransitionPlayerDistance(this, player, 100, true);
-            var transitionPlayerFarAway = new TransitionPlayerDistance(this, player, 200, false);
+            var transitionPlayerFarAway = new TransitionPlayerDistance(this, player, 150, false);
+            var transitionDead = new TransitionDead(this);
             var transitions = new Dictionary<State, List<(Transition, State)>>();
-            transitions[patrollingState] = new List<(Transition, State)>() { { (transitionPlayerDistance, attackingState) } };
-            transitions[attackingState] = new List<(Transition, State)>() { { (transitionPlayerFarAway, patrollingState) } };
+            transitions[patrollingState] = new List<(Transition, State)>() { { (transitionPlayerDistance, attackingState) }, { (transitionDead, deadState) } };
+            transitions[attackingState] = new List<(Transition, State)>() { { (transitionPlayerFarAway, patrollingState) }, { (transitionDead, deadState) } };
             stateMachine = new StateMachine(patrollingState, transitions);
         }
 
@@ -87,6 +94,11 @@ namespace AIGame.source
             }
         }
 
+        public void UpdateDead()
+        {
+
+        }
+
         public bool hasHit(Rectangle playerRect)
         {
             return hitbox.Intersects(playerRect);
@@ -95,7 +107,19 @@ namespace AIGame.source
         {
             SpriteEffects effect = isFacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            Animation animation = stateMachine.GetState == patrollingState ? enemyAnim : enemyAlertAnim;
+            Animation animation;
+            if (stateMachine.GetState == patrollingState)
+            {
+                animation = enemyAnim;
+            }
+            else if (stateMachine.GetState == attackingState)
+            {
+                animation = enemyAlertAnim;
+            }
+            else
+            {
+                animation = deadAnim;
+            }
 
             animation.Draw(spriteBatch, position, gameTime, effect);
         }

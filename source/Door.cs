@@ -32,7 +32,11 @@ namespace AIGame.source
         {
             Opening = true;
             animation.Playing = true;
-            player.FreezeTimer = 5;
+            player.FreezeTimer = 3;
+            if (player.FreezeTimer > 0)
+            {
+                //animation switches to idle animation (CurrentAnimation.Idle)
+            }
         }
 
         public bool hasHit(Rectangle playerRect)

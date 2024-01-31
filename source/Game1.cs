@@ -55,6 +55,11 @@ namespace AIGame.source
         private List<Rectangle> enemyPathway;
         #endregion
 
+        #region BulletLogic
+        MouseState mState;
+        bool mReleased = true;
+        #endregion
+
         #region Bird
         private List<Bird> birds;
         #endregion
@@ -197,44 +202,100 @@ namespace AIGame.source
             {
                 enemyPathway.Add(new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height));
             }
-            //Texture2D enemyTexture = Content.Load<Texture2D>("statemachineEnemy\\2 - Martian_Red_Running (32 x 32)");
+            Texture2D jungleSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_walking");
+            Texture2D jungleSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_alert");
+            Texture2D jungleSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_death");
+            Texture2D snowSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_walking");
+            Texture2D snowSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_alert");
+            Texture2D snowSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\snowspider_death");
             Texture2D spiderTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_walking");
             Texture2D spiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_alert");
+            Texture2D spiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_death");
+
             enemies = new List<Enemy>();
-            Enemy martian = new Enemy(
-               spiderTexture, spiderAlertTexture,
+            Enemy jungleSpider = new Enemy(
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
                enemyPathway[0],
                player
                 );
+            enemies.Add(jungleSpider);
 
-            enemies.Add(martian);
-            martian = new Enemy(
-               spiderTexture, spiderAlertTexture,
+            jungleSpider = new Enemy(
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
                enemyPathway[1],
                player
                 );
+            enemies.Add(jungleSpider);
 
-            enemies.Add(martian);
-            martian = new Enemy(
-               spiderTexture, spiderAlertTexture,
+            jungleSpider = new Enemy(
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
                enemyPathway[2],
                player
                 );
-            enemies.Add(martian);
+            enemies.Add(jungleSpider);
+
+            jungleSpider = new Enemy(
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            enemyPathway[5],
+            player
+            );
+            enemies.Add(jungleSpider);
+
+            jungleSpider = new Enemy(
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            enemyPathway[6],
+            player
+            );
+            enemies.Add(jungleSpider);
+
+            jungleSpider = new Enemy(
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            enemyPathway[7],
+            player
+            );
+            enemies.Add(jungleSpider);
 
             Enemy spider = new Enemy(
-               spiderTexture, spiderAlertTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture,
                enemyPathway[3],
                player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-               spiderTexture, spiderAlertTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture,
                enemyPathway[4],
                player
                 );
             enemies.Add(spider);
+
+            Enemy snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[8],
+                player
+            );
+            enemies.Add(snowSpider);
+
+            snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[9],
+                player
+            );
+            enemies.Add(snowSpider);
+
+            snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[10],
+                player
+            );
+            enemies.Add(snowSpider);
+
+            snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[11],
+                player
+            );
+            enemies.Add(snowSpider);
             #endregion
 
             #region Bird
@@ -289,11 +350,16 @@ namespace AIGame.source
             #region Managers
             if (_gameManager.HasGameEnded(player.hitbox))
             {
-                Label.Put("Game Ended!");
+                //screen fade to black..?
+                Label.Put("To be continued...?");
+                Label.Put($"Final Score: {points}");
             }
             if (player_health <= 0)
             {
+                player_health = 0;
                 Label.Put("Game Over!");
+                Label.Put("Press Enter to try again");
+                // delete player sprite, set playerspeed to 0, pressing enter restarts entire game
             }
             #endregion
             Panel.Pop();
@@ -307,7 +373,7 @@ namespace AIGame.source
                 enemy.Update(gameTime);
                 //isGameOver = enemy.hasHit(player.hitbox);
 
-                if (enemy.hasHit(player.hitbox))
+                if (!enemy.Dead && enemy.hasHit(player.hitbox))
                 {
                     hit_counter++;
                     if (hit_counter > time_between_hurt)
@@ -339,11 +405,13 @@ namespace AIGame.source
 
             #endregion
 
-            #region Bullet
+            #region BulletLogic
 
-            if (player.isShooting)
+            mState = Mouse.GetState();
+
+            if (mState.LeftButton == ButtonState.Pressed && mReleased == true)
             {
-                if (time_between_bullets > 5) //&& bullets.ToArray().Length < 20) //number changes the amount of bullets you have in the level
+                if (time_between_bullets == 0) //&& bullets.ToArray().Length < 20) //number changes the amount of bullets you have in the level if pickups are added then maybe set an amount
                 {
                     var temp_hitbox = new 
                        Rectangle((int)player.position.X+15, //both these numbers change where the bullet shoots from
@@ -358,12 +426,16 @@ namespace AIGame.source
                     {
                         bullets.Add(new Bullet(bulletTexture, -4, temp_hitbox));
                     }
-                    time_between_bullets = 0;
                 }
                 else
                 {
                     time_between_bullets++;
                 }
+                mReleased = false;
+            }
+            if (mState.LeftButton == ButtonState.Released)
+            {
+                mReleased = true;
             }
 
             foreach (var bullet in bullets.ToArray())
@@ -375,12 +447,12 @@ namespace AIGame.source
                     bullets.Remove(bullet);                   
                 }
 
-                foreach (var enemy in enemies.ToArray())
+                foreach (var enemy in enemies)
                 {
-                    if (bullet.hitbox.Intersects(enemy.hitbox))
+                    if (!enemy.Dead && bullet.hitbox.Intersects(enemy.hitbox))
                     {
                         bullets.Remove(bullet);
-                        enemies.Remove(enemy);
+                        enemy.Dead = true;
                         points++;
                         break;
                     }

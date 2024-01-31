@@ -367,7 +367,7 @@
 #begin PixeloidSansBold-PKnYd.ttf
 /copy:PixeloidSansBold-PKnYd.ttf
 
-#begin statemachineEnemy/2 - Martian_Red_Hurt (32 x 32).png
+#begin statemachineEnemy/junglespider_alert.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -377,9 +377,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:statemachineEnemy/2 - Martian_Red_Hurt (32 x 32).png
+/build:statemachineEnemy/junglespider_alert.png
 
-#begin statemachineEnemy/2 - Martian_Red_Idle (32 x 32).png
+#begin statemachineEnemy/junglespider_death.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -389,9 +389,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:statemachineEnemy/2 - Martian_Red_Idle (32 x 32).png
+/build:statemachineEnemy/junglespider_death.png
 
-#begin statemachineEnemy/2 - Martian_Red_Running (32 x 32).png
+#begin statemachineEnemy/junglespider_startle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -401,7 +401,67 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:statemachineEnemy/2 - Martian_Red_Running (32 x 32).png
+/build:statemachineEnemy/junglespider_startle.png
+
+#begin statemachineEnemy/junglespider_walking.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/junglespider_walking.png
+
+#begin statemachineEnemy/snowSpider_alert.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/snowSpider_alert.png
+
+#begin statemachineEnemy/snowspider_death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/snowspider_death.png
+
+#begin statemachineEnemy/snowspider_startle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/snowspider_startle.png
+
+#begin statemachineEnemy/snowSpider_walking.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/snowSpider_walking.png
 
 #begin statemachineEnemy/spider_alert.png
 /importer:TextureImporter
@@ -414,6 +474,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:statemachineEnemy/spider_alert.png
+
+#begin statemachineEnemy/spider_death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/spider_death.png
+
+#begin statemachineEnemy/spider_startle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:statemachineEnemy/spider_startle.png
 
 #begin statemachineEnemy/spider_walking.png
 /importer:TextureImporter

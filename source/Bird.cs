@@ -37,12 +37,12 @@ namespace AIGame.source
         {
             if (!Awake)
             {
-                if ((player.position - position).Length() < 50)
+                if ((player.position - position).Length() < 50) //if the player comes into a radius of 50 pixels the birds will transition from being asleep to awake.
                 {
                     Awake = true;
                     anim = awakeAnim;
                     Random rnd = new Random();
-                    velocity.X = rnd.NextSingle() * 2 - 1;
+                    velocity.X = rnd.NextSingle() * 2 - 1; //randomises the bird sprite everytime the game is launced.
                 }
                 return;
             }
@@ -54,10 +54,10 @@ namespace AIGame.source
             const float tooCloseRange = 80;
             const float visionRange = 200;
             const float maxSpeed = 2;
-            const float leftMargin = 0;
-            const float topMargin = 0;
-            const float rightMargin = 900;
-            const float bottomMargin = 369;
+            const float leftMargin = 0; //prevents the birds from forever flying off the screen.
+            const float topMargin = 0; //prevents the birds from forever flying off the screen.
+            const float rightMargin = 900; //prevents the birds from forever flying off the screen.
+            const float bottomMargin = 369; //keeps the respective flying animal (parrot in this case) from leaving their respective biome.
 
             Vector2 close = Vector2.Zero;
             Vector2 velAverage = Vector2.Zero;
@@ -126,7 +126,7 @@ namespace AIGame.source
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
-            anim.Draw(spriteBatch, position, gameTime, velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            anim.Draw(spriteBatch, position, gameTime, velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None); //essentially checks if the sprite is moving negative or positive on the x axis and flips the sprite.
         }
     }
 }
