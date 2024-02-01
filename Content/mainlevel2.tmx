@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="34" nextobjectid="284">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="60" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="37" nextobjectid="319">
  <tileset firstgid="1" name="tilesetfull" tilewidth="16" tileheight="16" tilecount="40000" columns="200">
   <image source="../../../../OneDrive/Desktop/PyxelEdit/tilesetfull.png" width="3200" height="3200"/>
  </tileset>
@@ -1134,6 +1134,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="35" name="JungleFakeFloors">
+  <object id="284" x="784" y="448" width="48" height="48"/>
+ </objectgroup>
  <objectgroup id="26" name="spikes">
   <object id="164" x="96" y="804" width="64" height="12"/>
   <object id="281" x="80" y="1380" width="432" height="28"/>
@@ -1145,14 +1148,14 @@
   <object id="6" x="0" y="338" width="142.002" height="142"/>
   <object id="7" x="158" y="401" width="228" height="79"/>
   <object id="8" x="386" y="386" width="364" height="94"/>
-  <object id="9" x="750" y="386" width="18" height="94"/>
-  <object id="10" x="832" y="434.004" width="16" height="62"/>
+  <object id="9" x="750" y="384.031" width="18" height="96"/>
+  <object id="10" x="832" y="432.091" width="16" height="64"/>
   <object id="14" x="864" y="816" width="96" height="144"/>
   <object id="16" x="608" y="816.005" width="144" height="144"/>
   <object id="17" x="752" y="864" width="32" height="96"/>
   <object id="18" x="831.938" y="864" width="32" height="96"/>
-  <object id="19" x="768" y="434" width="16" height="62"/>
-  <object id="20" x="848" y="386" width="18" height="94"/>
+  <object id="19" x="768" y="432" width="16" height="64"/>
+  <object id="20" x="848" y="384.004" width="18" height="96"/>
   <object id="21" x="866" y="338" width="94" height="142"/>
   <object id="22" x="-40" y="0" width="40" height="1440"/>
   <object id="68" x="480" y="848" width="128" height="112"/>
@@ -1296,13 +1299,16 @@
   <object id="258" x="608" y="1136" width="64" height="32"/>
  </objectgroup>
  <objectgroup id="24" name="Points">
-  <object id="160" name="PlayerStart" x="98.925" y="1037.7">
+  <object id="160" name="PlayerStart" x="105.258" y="1022.37">
    <point/>
   </object>
   <object id="180" name="pickaxe" x="625.955" y="567.409">
    <point/>
   </object>
   <object id="261" name="key" x="64" y="1056">
+   <point/>
+  </object>
+  <object id="285" name="machete" x="839" y="80">
    <point/>
   </object>
  </objectgroup>
@@ -1315,13 +1321,40 @@
   <object id="267" name="5" x="866" y="306" width="94" height="32"/>
   <object id="268" name="6" x="104" y="176" width="48" height="32"/>
   <object id="271" name="7" x="648" y="48" width="48" height="32"/>
-  <object id="273" name="8" x="504" y="1328" width="144" height="32"/>
+  <object id="273" name="8" x="512" y="1328" width="144" height="32"/>
   <object id="274" name="9" x="88" y="1296" width="80" height="32"/>
   <object id="275" name="10" x="216" y="1184" width="96" height="32"/>
   <object id="282" name="11" x="376" y="1040" width="96" height="32"/>
+  <object id="286" name="12" x="776" y="112" width="48" height="32"/>
+  <object id="287" name="13" x="200" y="224" width="48" height="32"/>
+  <object id="293" name="14" x="560" y="560" width="72" height="32"/>
+  <object id="294" name="15" x="32" y="1056" width="96" height="32"/>
+  <object id="295" name="16" x="424" y="1136" width="48" height="32"/>
+  <object id="296" name="17" x="392" y="784" width="80" height="32"/>
+  <object id="297" name="18" x="232" y="768" width="56" height="32"/>
  </objectgroup>
  <objectgroup id="31" name="LockedDoor">
   <object id="265" x="912" y="1264" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="36" name="SnowBatSpawn">
+  <object id="298" x="215.002" y="993"/>
+  <object id="299" x="223" y="993"/>
+  <object id="300" x="237" y="993"/>
+  <object id="301" x="247.002" y="993"/>
+  <object id="302" x="704" y="1230.94"/>
+  <object id="306" x="707" y="1230.94"/>
+  <object id="307" x="699.938" y="1230.94"/>
+  <object id="308" x="696" y="1231"/>
+  <object id="309" x="257.996" y="1246"/>
+  <object id="310" x="260.996" y="1246"/>
+  <object id="311" x="253.934" y="1246"/>
+  <object id="312" x="249.996" y="1246"/>
+  <object id="313" x="460" y="993"/>
+  <object id="314" x="467.998" y="993"/>
+  <object id="315" x="481.998" y="993"/>
+  <object id="316" x="492" y="993"/>
+  <object id="317" x="67.9999" y="1134"/>
+  <object id="318" x="75.9979" y="1134"/>
  </objectgroup>
  <objectgroup id="28" name="BatSpawn">
   <object id="171" x="460" y="657"/>
@@ -1332,6 +1365,11 @@
   <object id="177" x="288" y="512"/>
   <object id="178" x="294" y="512"/>
   <object id="179" x="298" y="512"/>
+  <object id="288" x="150" y="657"/>
+  <object id="289" x="150" y="657"/>
+  <object id="290" x="142" y="657"/>
+  <object id="291" x="152" y="657"/>
+  <object id="292" x="148" y="657"/>
  </objectgroup>
  <objectgroup id="6" name="BirdSpawn">
   <object id="62" name="3" x="519" y="226"/>

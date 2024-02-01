@@ -137,7 +137,11 @@ namespace AIGame.source
                     isJumping = false;
                     hitbox.Y = collidingRectangle.Y - hitbox.Height;
                     onIce = collisionResult.Value.slippery;
-                    if (collisionResult.Value.fakeFloor != null && Has<Pickaxe>())
+                    if (collisionResult.Value.jungleFakeFloor != null && Has<Machete>())
+                    {
+                        collisionResult.Value.jungleFakeFloor.Unlock();
+                    }
+                    else if (collisionResult.Value.fakeFloor != null && Has<Pickaxe>())
                     {
                         collisionResult.Value.fakeFloor.StoodOn();
                     }                  

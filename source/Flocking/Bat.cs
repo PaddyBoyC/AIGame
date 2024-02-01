@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source
+namespace AIGame.source.Flocking
 {
     internal class Bat : Entity
     {
@@ -37,7 +37,7 @@ namespace AIGame.source
         {
             if (!Awake)
             {
-                if ((player.position - position).Length() < 50)
+                if ((player.position - position).Length() < 80)
                 {
                     Awake = true;
                     anim = awakeAnim;

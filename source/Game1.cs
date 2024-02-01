@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
 using TiledSharp;
+using AIGame.source.Flocking;
 
 namespace AIGame.source
 {
@@ -18,6 +19,7 @@ namespace AIGame.source
         private Texture2D blackSquare;
         private float fadeAmount = 0;
         private bool gameOver = false;
+        private bool gameOverWin = false;
 
         private Rectangle endZone;
 
@@ -40,6 +42,7 @@ namespace AIGame.source
         private List<Rectangle> collisionRects;
         private List<Rectangle> slipperyCollisionRects;
         private List<FakeFloor> fakeFloors;
+        private List<JungleFakeFloor> jungleFakeFloors;
         private List<Door> doors;
         private Vector2 startPos;
         private Rectangle endRect;
@@ -50,7 +53,7 @@ namespace AIGame.source
         private List<Bullet> bullets;
         private Texture2D bulletTexture;
         private int time_between_bullets;
-        private int points = 0;
+        private int spidersKilled = 0;
         private int player_health = 10;
         private int time_between_hurt = 20;
         private int hit_counter = 0;
@@ -72,6 +75,10 @@ namespace AIGame.source
 
         #region Bat
         private List<Bat> bats;
+        #endregion
+
+        #region SnowBat
+        private List<SnowBat> snowBats;
         #endregion
 
         #region Camera
@@ -137,6 +144,10 @@ namespace AIGame.source
                 {
                     startPos = pos;
                 }
+                else if (o.Name == "machete")
+                {
+                    levelObjects.Add(new Machete(pos, Content.Load<Texture2D>("mainCharacter\\machete")));
+                }
                 else if (o.Name == "pickaxe")
                 {
                     levelObjects.Add(new Pickaxe(pos, Content.Load<Texture2D>("mainCharacter\\pickaxe")));
@@ -166,6 +177,7 @@ namespace AIGame.source
             slipperyCollisionRects = new List<Rectangle>();
             fakeFloors = new List<FakeFloor>();
             doors = new List<Door>();
+            jungleFakeFloors = new List<JungleFakeFloor>();
 
 
             foreach (var o in map.ObjectGroups["Collisions"].Objects)
@@ -184,6 +196,14 @@ namespace AIGame.source
                 }
             }
 
+            foreach (var o in map.ObjectGroups["JungleFakeFloors"].Objects)
+            {
+                AnimationForVines vinesAnim = new AnimationForVines(Content.Load<Texture2D>("maincharacter\\vinesbreaking"), millisecondsPerFrame: 50);
+                vinesAnim.Playing = false;
+                vinesAnim.Loop = false;
+                jungleFakeFloors.Add(new JungleFakeFloor(vinesAnim, new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
+            }
+
             foreach (var o in map.ObjectGroups["FakeFloors"].Objects)
             {
                 fakeFloors.Add(new FakeFloor(Content.Load<Texture2D>("mainTileset\\fakefloor"), new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
@@ -196,6 +216,7 @@ namespace AIGame.source
                 dooranim.Loop = false;
                 doors.Add(new Door(dooranim, new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));
             }
+
             foreach (var o in map.ObjectGroups["zones"].Objects)
             {
                 if (o.Name == "endZone")
@@ -220,9 +241,11 @@ namespace AIGame.source
             Texture2D jungleSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_walking");
             Texture2D jungleSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_alert");
             Texture2D jungleSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_death");
+
             Texture2D snowSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_walking");
             Texture2D snowSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_alert");
             Texture2D snowSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\snowspider_death");
+
             Texture2D spiderTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_walking");
             Texture2D spiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_alert");
             Texture2D spiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_death");
@@ -284,6 +307,27 @@ namespace AIGame.source
                 );
             enemies.Add(spider);
 
+            spider = new Enemy(
+               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               enemyPathway[14],
+               player
+                );
+            enemies.Add(spider);
+
+            spider = new Enemy(
+               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               enemyPathway[17],
+               player
+                );
+            enemies.Add(spider);
+
+            spider = new Enemy(
+               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               enemyPathway[18],
+               player
+                );
+            enemies.Add(spider);
+
             Enemy snowSpider = new Enemy(
                 snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
                 enemyPathway[8],
@@ -308,6 +352,34 @@ namespace AIGame.source
             snowSpider = new Enemy(
                 snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
                 enemyPathway[11],
+                player
+            );
+            enemies.Add(snowSpider);
+
+            snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[15],
+                player
+            );
+            enemies.Add(snowSpider);
+
+            spider = new Enemy(
+                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+                enemyPathway[12],
+                player
+                );
+            enemies.Add(spider);
+
+            spider = new Enemy(
+                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+                enemyPathway[13],
+                player
+                );
+            enemies.Add(spider);
+
+            snowSpider = new Enemy(
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                enemyPathway[16],
                 player
             );
             enemies.Add(snowSpider);
@@ -341,52 +413,88 @@ namespace AIGame.source
 
             #endregion
 
+            #region SnowBat
+            List<(Texture2D, Texture2D)> snowbatTextures = new List<(Texture2D, Texture2D)>();
+            snowbatTextures.Add((Content.Load<Texture2D>("flockingEnemy\\snowbat_idle"), Content.Load<Texture2D>("flockingEnemy\\snowbat_flying")));
+
+            snowBats = new List<SnowBat>();
+
+            foreach (var o in map.ObjectGroups["SnowBatSpawn"].Objects)
+            {
+                snowBats.Add(new SnowBat(new Vector2((float)o.X, (float)o.Y), snowbatTextures[rnd.Next(1)], snowBats, player));
+            }
+            #endregion
+
             renderTarget = new RenderTarget2D(GraphicsDevice, 960, 850);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             #region UI
             GuiHelper.UpdateSetup(gameTime);
 
             _ui.UpdateAll(gameTime);
 
             Panel.Push().XY = new Vector2(0, 0);
-
-            Label.Put($"Points: {points}");
-            Label.Put($"Health: {player_health}");
-            Label.Put($"pos {player.position}");
+            if (!gameOver && !gameOverWin)
+            {
+                Label.Put($"Spiders vanquished: {spidersKilled}");
+                Label.Put($"Health: {player_health}");
+                //Label.Put($"pos {player.position}"); //debug only
+            }
             Panel.Pop();
 
-            Panel.Push().XY = new Vector2(screenWidth/2-100, screenHeight/2);
-            #region Managers
-            if (_gameManager.HasGameEnded(player.hitbox))
-            {
-                //screen fade to black..?
-                Label.Put("To be continued...?");
-                Label.Put($"Final Score: {points}");
-            }
+            Panel.Push().XY = new Vector2(screenWidth/2 - 130, screenHeight/2 -200);
             if (player_health <= 0)
             {
+                player.playerSpeed = 0;
                 player_health = 0;
-                Label.Put("Game Over!");
-                Label.Put("Press Enter to try again");
-                // delete player sprite, set playerspeed to 0, pressing enter restarts entire game
-                gameOver = true;
-            }
-            if (gameOver)
-            {
+                Label.Put("You Fainted!");
+                Panel.Pop();
+
+                Panel.Push().XY = new Vector2(screenWidth / 2 - 320, screenHeight / 2 - 100);
+                Label.Put("Press Enter to retreat to the surface...");
+                Panel.Pop();
+
+                Panel.Push().XY = new Vector2(screenWidth / 2 - 230, screenHeight / 2);
+                Label.Put("Press Esc to exit the game");
+                Panel.Pop();
+
                 fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
                 if (fadeAmount > 1)
                 {
                     fadeAmount = 1;
                 }
+                gameOver = true;
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    Reset();
+                }
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                {
+                    Exit();
+                }
             }
-            #endregion
-            Panel.Pop();
+
+            Panel.Push().XY = new Vector2(screenWidth / 2 - 300, screenHeight / 2 - 200); //this isn't working as expected
+            if (gameOverWin)
+            {
+                player.playerSpeed = 0;
+                fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
+
+
+                Label.Put("To be continued...?");
+                Panel.Pop();
+
+                Panel.Push().XY = new Vector2(screenWidth / 2 - 800, screenHeight / 2 - 100);
+                Label.Put($"Spiders Vanquished: {spidersKilled}");
+                Panel.Pop(); 
+
+                if (fadeAmount > 1)
+                {
+                    fadeAmount = 1;
+                }
+            }
 
             GuiHelper.UpdateCleanup();
             #endregion
@@ -413,6 +521,13 @@ namespace AIGame.source
             foreach (var bird in birds)
             {
                 bird.Update(gameTime);
+            }
+            #endregion
+
+            #region SnowBat
+            foreach (var snowBat in snowBats)
+            {
+                snowBat.Update(gameTime);
             }
             #endregion
 
@@ -477,7 +592,7 @@ namespace AIGame.source
                     {
                         bullets.Remove(bullet);
                         enemy.Dead = true;
-                        points++;
+                        spidersKilled++;
                         break;
                     }
                 }
@@ -504,7 +619,7 @@ namespace AIGame.source
             }
             if(player.hitbox.Intersects(endZone))
             {
-                gameOver = true;
+                gameOverWin = true;
             }
             #endregion
 
@@ -521,6 +636,13 @@ namespace AIGame.source
             foreach (var door in doors)
             {
                door.Update(gameTime);
+            }
+            #endregion
+
+            #region JungleFakeFloor
+            foreach (var jungleFakeFloor in jungleFakeFloors)
+            {
+                jungleFakeFloor.Update(gameTime);
             }
             #endregion
         }
@@ -543,22 +665,36 @@ namespace AIGame.source
                 door.Draw(_spriteBatch, gameTime);
             }
 
+            foreach (var jungleFakeFloor in jungleFakeFloors)
+            {
+                jungleFakeFloor.Draw(_spriteBatch, gameTime);
+            }
+
             #region Enemy
             foreach (var enemy in enemies)
             {
                 enemy.Draw(_spriteBatch, gameTime);
             }
             #endregion
+
             #region Bird
             foreach (var bird in birds)
             {
                 bird.Draw(_spriteBatch, gameTime);
             }
             #endregion
+
             #region Bat
             foreach (var bat in bats)
             {
                 bat.Draw(_spriteBatch, gameTime);
+            }
+            #endregion
+
+            #region SnowBat
+            foreach (var snowBat in snowBats)
+            {
+                snowBat.Draw(_spriteBatch, gameTime);
             }
             #endregion
 
@@ -613,13 +749,15 @@ namespace AIGame.source
             public Rectangle rectangle;
             public bool slippery;
             public FakeFloor fakeFloor;
+            public JungleFakeFloor jungleFakeFloor;
             public Door door;
 
-            public LevelCollisionResult(Rectangle rectangle, bool slippery = false, FakeFloor fakeFloor = null, Door door = null)
+            public LevelCollisionResult(Rectangle rectangle, bool slippery = false, FakeFloor fakeFloor = null, Door door = null, JungleFakeFloor jungleFakeFloor = null)
             {
                 this.rectangle = rectangle;
                 this.slippery = slippery;
                 this.fakeFloor = fakeFloor;
+                this.jungleFakeFloor = jungleFakeFloor;
                 this.door = door;
             }
         }
@@ -654,7 +792,24 @@ namespace AIGame.source
                     return new LevelCollisionResult(door.hitbox, door : door);
                 }
             }
+            foreach (var jungleFakeFloor in jungleFakeFloors)
+            {
+                if (jungleFakeFloor.hasHit(hitbox))
+                {
+                    return new LevelCollisionResult(jungleFakeFloor.hitbox, jungleFakeFloor: jungleFakeFloor);
+                }
+            }
             return null;
         }
-    }
+
+        private void Reset()
+        {
+            mReleased = true;
+            player_health = 10;
+            gameOver = false;
+            fadeAmount = 0;
+            player.playerSpeed = 140;
+            player.position = startPos;
+        }
+    }   
 }

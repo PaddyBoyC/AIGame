@@ -13,22 +13,25 @@ namespace AIGame.source
         private Animation enemyAnim;
         private Animation enemyAlertAnim;
         private Animation deadAnim;
+
         public bool Dead { get; set; } = false;
         private Rectangle pathway;
         private float speed = 2;
         private bool isFacingRight = true;
-        private StateMachine stateMachine;
+        private bool reset = false;
+        private StateMachine stateMachine;  
         private Player player;
         State patrollingState;
         State attackingState;
         State deadState;
 
-        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Texture2D deadSpriteSheet, Rectangle pathway, Player player, float speed = 1)
+        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Texture2D deadSpriteSheet, Rectangle pathway, Player player, float speed = 1, bool reset = false)
         {
             enemyAnim = new Animation(spriteSheet, millisecondsPerFrame: 100);
             enemyAlertAnim = new Animation(alertSpriteSheet, millisecondsPerFrame: 100);
             deadAnim = new Animation(deadSpriteSheet, millisecondsPerFrame: 100);
             deadAnim.Loop = false;
+
             this.pathway = pathway;
 
             position = new Vector2(pathway.X, pathway.Y);
@@ -47,6 +50,7 @@ namespace AIGame.source
             transitions[patrollingState] = new List<(Transition, State)>() { { (transitionPlayerDistance, attackingState) }, { (transitionDead, deadState) } };
             transitions[attackingState] = new List<(Transition, State)>() { { (transitionPlayerFarAway, patrollingState) }, { (transitionDead, deadState) } };
             stateMachine = new StateMachine(patrollingState, transitions);
+            this.reset = reset;
         }
 
 

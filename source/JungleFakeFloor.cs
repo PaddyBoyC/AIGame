@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace AIGame.source
 {
-    public class Door : Entity
+    public class JungleFakeFloor : Entity
     {
-        private Animation animation;
+        private AnimationForVines animation;
         private Player player;
         public bool Opening { get; set; } = false;
 
-        public Door(Animation animation, Rectangle hitbox, Player player)
+        public JungleFakeFloor(AnimationForVines animation, Rectangle hitbox, Player player)
         {
             this.animation = animation;
 
@@ -32,7 +32,7 @@ namespace AIGame.source
         {
             Opening = true;
             animation.Playing = true;
-            player.FreezeTimer = 3;
+            player.FreezeTimer = 1;
         }
 
         public bool hasHit(Rectangle playerRect)
