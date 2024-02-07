@@ -17,7 +17,9 @@ namespace AIGame.source
         float timeSinceLastFrame = 0;
         float millisecondsPerFrame;
         public bool Playing { get; set; } = true;
-        public bool Loop { get; set; } = true;  
+        public bool Loop { get; set; } = true;
+
+        public void Reset() => c = 0;
 
         public Animation(Texture2D spritesheet, float width = 32, float height = 32, float millisecondsPerFrame = 500)
         {

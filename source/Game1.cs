@@ -241,144 +241,147 @@ namespace AIGame.source
             Texture2D jungleSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_walking");
             Texture2D jungleSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_alert");
             Texture2D jungleSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_death");
+            Texture2D jungleSpiderJumpTexture = Content.Load<Texture2D>("statemachineEnemy\\junglespider_startle");
 
             Texture2D snowSpiderTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_walking");
             Texture2D snowSpiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\snowSpider_alert");
             Texture2D snowSpiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\snowspider_death");
+            Texture2D snowSpiderJumpTexture = Content.Load<Texture2D>("statemachineEnemy\\snowspider_startle");
 
             Texture2D spiderTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_walking");
             Texture2D spiderAlertTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_alert");
             Texture2D spiderDeadTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_death");
+            Texture2D spiderJumpTexture = Content.Load<Texture2D>("statemachineEnemy\\spider_startle");
 
             enemies = new List<Enemy>();
             Enemy jungleSpider = new Enemy(
-               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
                enemyPathway[0],
                player
                 );
             enemies.Add(jungleSpider);
 
             jungleSpider = new Enemy(
-               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
                enemyPathway[1],
                player
                 );
             enemies.Add(jungleSpider);
 
             jungleSpider = new Enemy(
-               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+               jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
                enemyPathway[2],
                player
                 );
             enemies.Add(jungleSpider);
 
             jungleSpider = new Enemy(
-            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
             enemyPathway[5],
             player
             );
             enemies.Add(jungleSpider);
 
             jungleSpider = new Enemy(
-            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
             enemyPathway[6],
             player
             );
             enemies.Add(jungleSpider);
 
             jungleSpider = new Enemy(
-            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+            jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
             enemyPathway[7],
             player
             );
             enemies.Add(jungleSpider);
 
             Enemy spider = new Enemy(
-               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture, spiderJumpTexture,
                enemyPathway[3],
                player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture, spiderJumpTexture,
                enemyPathway[4],
                player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture, spiderJumpTexture,
                enemyPathway[14],
                player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture, spiderJumpTexture,
                enemyPathway[17],
                player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-               spiderTexture, spiderAlertTexture, spiderDeadTexture,
+               spiderTexture, spiderAlertTexture, spiderDeadTexture, spiderJumpTexture,
                enemyPathway[18],
                player
                 );
             enemies.Add(spider);
 
             Enemy snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[8],
                 player
             );
             enemies.Add(snowSpider);
 
             snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[9],
                 player
             );
             enemies.Add(snowSpider);
 
             snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[10],
                 player
             );
             enemies.Add(snowSpider);
 
             snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[11],
                 player
             );
             enemies.Add(snowSpider);
 
             snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[15],
                 player
             );
             enemies.Add(snowSpider);
 
             spider = new Enemy(
-                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
                 enemyPathway[12],
                 player
                 );
             enemies.Add(spider);
 
             spider = new Enemy(
-                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture,
+                jungleSpiderTexture, jungleSpiderAlertTexture, jungleSpiderDeadTexture, jungleSpiderJumpTexture,
                 enemyPathway[13],
                 player
                 );
             enemies.Add(spider);
 
             snowSpider = new Enemy(
-                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture,
+                snowSpiderTexture, snowSpiderAlertTexture, snowSpiderDeadTexture, snowSpiderJumpTexture,
                 enemyPathway[16],
                 player
             );

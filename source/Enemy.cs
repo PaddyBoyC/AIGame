@@ -13,24 +13,29 @@ namespace AIGame.source
         private Animation enemyAnim;
         private Animation enemyAlertAnim;
         private Animation deadAnim;
+        private Animation jumpAnim;
 
         public bool Dead { get; set; } = false;
+        public bool IsFacingRight { get; private set; } = true;
+
         private Rectangle pathway;
         private float speed = 2;
-        private bool isFacingRight = true;
         private bool reset = false;
         private StateMachine stateMachine;  
         private Player player;
-        State patrollingState;
-        State attackingState;
-        State deadState;
+        private State patrollingState;
+        private State attackingState;
+        private State deadState;
+        private State jumpState;
 
-        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Texture2D deadSpriteSheet, Rectangle pathway, Player player, float speed = 1, bool reset = false)
+        public Enemy(Texture2D spriteSheet, Texture2D alertSpriteSheet, Texture2D deadSpriteSheet, Texture2D jumpSpriteSheet, Rectangle pathway, Player player, float speed = 1, bool reset = false)
         {
             enemyAnim = new Animation(spriteSheet, millisecondsPerFrame: 100);
             enemyAlertAnim = new Animation(alertSpriteSheet, millisecondsPerFrame: 100);
             deadAnim = new Animation(deadSpriteSheet, millisecondsPerFrame: 100);
             deadAnim.Loop = false;
+            jumpAnim = new Animation(jumpSpriteSheet, millisecondsPerFrame: 100);
+            jumpAnim.Loop = false;
 
             this.pathway = pathway;
 
@@ -43,11 +48,16 @@ namespace AIGame.source
             patrollingState = new StateEnemyPatrol(this);
             attackingState = new StateEnemyAttack(this);
             deadState = new StateEnemyDead(this);
-            var transitionPlayerDistance = new TransitionPlayerDistance(this, player, 100, true);
-            var transitionPlayerFarAway = new TransitionPlayerDistance(this, player, 150, false);
+            jumpState = new StateEnemyJump(this);
+
+            var transitionPlayerDistance = new TransitionPlayerDistance(this, player, 100, true, true);
+            var transitionPlayerFarAway = new TransitionPlayerDistance(this, player, 150, false, false);
             var transitionDead = new TransitionDead(this);
+            var transitionJumpComplete = new TransitionAnimationComplete(this, jumpAnim);
+
             var transitions = new Dictionary<State, List<(Transition, State)>>();
-            transitions[patrollingState] = new List<(Transition, State)>() { { (transitionPlayerDistance, attackingState) }, { (transitionDead, deadState) } };
+            transitions[patrollingState] = new List<(Transition, State)>() { { (transitionPlayerDistance, jumpState) }, { (transitionDead, deadState) } };
+            transitions[jumpState] = new List<(Transition, State)>() { { (transitionJumpComplete, attackingState) }, { (transitionDead, deadState) } };
             transitions[attackingState] = new List<(Transition, State)>() { { (transitionPlayerFarAway, patrollingState) }, { (transitionDead, deadState) } };
             stateMachine = new StateMachine(patrollingState, transitions);
             this.reset = reset;
@@ -65,7 +75,7 @@ namespace AIGame.source
             if (!pathway.Contains(hitbox))
             {
                 speed = -speed;
-                isFacingRight = !isFacingRight;
+                IsFacingRight = !IsFacingRight;
             }
             position.X += speed;
 
@@ -75,12 +85,14 @@ namespace AIGame.source
 
         public void UpdateAttacking()
         {
+            jumpAnim.Reset();
+
             if (pathway.Contains(hitbox))
             {
                 if (speed > 0 && player.position.X < position.X || speed < 0 && player.position.X > position.X)
                 {
                     speed = -speed;
-                    isFacingRight = !isFacingRight;
+                    IsFacingRight = !IsFacingRight;
                 }
 
                 // check if new position is outside pathway
@@ -109,7 +121,7 @@ namespace AIGame.source
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            SpriteEffects effect = isFacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            SpriteEffects effect = IsFacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             Animation animation;
             if (stateMachine.GetState == patrollingState)
@@ -120,9 +132,17 @@ namespace AIGame.source
             {
                 animation = enemyAlertAnim;
             }
-            else
+            else if (stateMachine.GetState == deadState)
             {
                 animation = deadAnim;
+            }
+            else if (stateMachine.GetState == jumpState)
+            {
+                animation = jumpAnim;
+            }
+            else
+            {
+                throw new Exception("invalid state");
             }
 
             animation.Draw(spriteBatch, position, gameTime, effect);

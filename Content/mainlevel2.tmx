@@ -1299,7 +1299,7 @@
   <object id="258" x="608" y="1136" width="64" height="32"/>
  </objectgroup>
  <objectgroup id="24" name="Points">
-  <object id="160" name="PlayerStart" x="105.258" y="1022.37">
+  <object id="160" name="PlayerStart" x="29.2583" y="265.37">
    <point/>
   </object>
   <object id="180" name="pickaxe" x="625.955" y="567.409">

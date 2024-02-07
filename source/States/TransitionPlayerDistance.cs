@@ -12,17 +12,24 @@ namespace AIGame.source.States
         Player player;
         float distance;
         bool lessThan;
+        bool facingMatters;
 
-        public TransitionPlayerDistance(object pOwner, Player pPlayer, float pDistance, bool pLessThan) :
+        public TransitionPlayerDistance(object pOwner, Player pPlayer, float pDistance, bool pLessThan, bool pFacingMatters) :
             base(pOwner)
         {
             player = pPlayer;
             distance = pDistance;
             lessThan = pLessThan;
+            facingMatters = pFacingMatters; 
         }
 
         public override bool ToTransition()
         {
+            Enemy thisEnemy = GetOwner() as Enemy;
+            if (thisEnemy != null && facingMatters && thisEnemy.IsFacingRight == thisEnemy.position.X > player.position.X)
+            {
+                return false;
+            }
             Entity thisEntity = (Entity)GetOwner();
             float distanceToPlayer = (thisEntity.position - player.position).Length();
             if (lessThan)
