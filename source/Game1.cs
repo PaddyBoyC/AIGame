@@ -198,7 +198,7 @@ namespace AIGame.source
 
             foreach (var o in map.ObjectGroups["JungleFakeFloors"].Objects)
             {
-                AnimationForVines vinesAnim = new AnimationForVines(Content.Load<Texture2D>("maincharacter\\vinesbreaking"), millisecondsPerFrame: 50);
+                Animation vinesAnim = new Animation(Content.Load<Texture2D>("maincharacter\\vinesbreaking"), width : 48, height : 48, millisecondsPerFrame: 50);
                 vinesAnim.Playing = false;
                 vinesAnim.Loop = false;
                 jungleFakeFloors.Add(new JungleFakeFloor(vinesAnim, new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height), player));

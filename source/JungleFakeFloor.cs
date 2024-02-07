@@ -10,11 +10,11 @@ namespace AIGame.source
 {
     public class JungleFakeFloor : Entity
     {
-        private AnimationForVines animation;
+        private Animation animation;
         private Player player;
         public bool Opening { get; set; } = false;
 
-        public JungleFakeFloor(AnimationForVines animation, Rectangle hitbox, Player player)
+        public JungleFakeFloor(Animation animation, Rectangle hitbox, Player player)
         {
             this.animation = animation;
 
