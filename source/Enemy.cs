@@ -67,7 +67,6 @@ namespace AIGame.source
         public override void Update(GameTime gameTime)
         {
             stateMachine.Update();
-
         }
 
         public void UpdatePatrolling()

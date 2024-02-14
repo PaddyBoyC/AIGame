@@ -9,10 +9,11 @@ using AIGame.source.Flocking;
 using Apos.Gui;
 using System.Reflection.Metadata;
 using Microsoft.Xna.Framework.Content;
+using AIGame.source.States;
 
 namespace AIGame.source
 {
-    public class PlayingGame
+    public class PlayingGame : State
     {
         public bool Reset { get; private set; } = false;
 
@@ -91,7 +92,8 @@ namespace AIGame.source
 
         #endregion
 
-        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget)
+        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget) :
+            base(null)
         {
             _spriteBatch = spriteBatch;
             this.renderTarget = renderTarget;
@@ -405,8 +407,9 @@ namespace AIGame.source
 
         }
 
-        public void Update(GameTime gameTime)
+        public override void OnUpdate()
         {
+            GameTime gameTime = Game1.LastGameTime;
             float screenWidth = Game1.screenWidth;
             float screenHeight = Game1.screenHeight;
 

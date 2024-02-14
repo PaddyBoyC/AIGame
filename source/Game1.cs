@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using TiledSharp;
 using AIGame.source.Flocking;
+using AIGame.source.States;
 
 namespace AIGame.source
 {
@@ -21,7 +22,9 @@ namespace AIGame.source
 
         private PlayingGame game;
 
+        private StateMachine stateMachine;
 
+        public static GameTime LastGameTime { get; private set; } = null;
 
         public Game1()
         {
@@ -51,12 +54,16 @@ namespace AIGame.source
             #endregion
             
             renderTarget = new RenderTarget2D(GraphicsDevice, 960, 850);
+
             game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
+
+            stateMachine = new StateMachine(game, new Dictionary<State, List<(Transition, State)>>());
         }
 
         protected override void Update(GameTime gameTime)
         {
-            game.Update(gameTime);
+            LastGameTime = gameTime;
+            stateMachine.Update();
             if (game.Reset)
             {
                 game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AIGame.source.States
 {
-    internal class State
+    public class State
     {
         object owner;
         
