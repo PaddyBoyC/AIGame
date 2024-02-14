@@ -39,12 +39,12 @@ namespace AIGame.source
         Animation[] playerAnimation;
         CurrentAnimation playerAnimationController;
 
-        Func<Rectangle, Game1.LevelCollisionResult?> levelCollisionFunc;
+        Func<Rectangle, PlayingGame.LevelCollisionResult?> levelCollisionFunc;
 
 
         Vector2 hitboxOffset;
 
-        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, Func<Rectangle, Game1.LevelCollisionResult?> levelCollisionFunc)
+        public Player(Vector2 position, Texture2D idleSprite, Texture2D runSprite, Texture2D jumpSprite, Texture2D fallSprite, Func<Rectangle, PlayingGame.LevelCollisionResult?> levelCollisionFunc)
         {
             playerAnimation = new Animation[4];
 
