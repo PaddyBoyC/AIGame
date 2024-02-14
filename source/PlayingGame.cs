@@ -14,6 +14,8 @@ namespace AIGame.source
 {
     public class PlayingGame
     {
+        public bool Reset { get; private set; } = false;
+
         private Texture2D blackSquare;
         private float fadeAmount = 0;
         private bool gameOver = false;
@@ -446,7 +448,7 @@ namespace AIGame.source
                 gameOver = true;
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
-                    Reset();
+                    Reset = true;
                 }
                 if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 {
@@ -777,16 +779,6 @@ namespace AIGame.source
                 }
             }
             return null;
-        }
-
-        private void Reset()
-        {
-            mReleased = true;
-            player_health = 10;
-            gameOver = false;
-            fadeAmount = 0;
-            player.playerSpeed = 140;
-            player.position = startPos;
         }
     }
 }

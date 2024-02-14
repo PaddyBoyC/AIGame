@@ -57,6 +57,10 @@ namespace AIGame.source
         protected override void Update(GameTime gameTime)
         {
             game.Update(gameTime);
+            if (game.Reset)
+            {
+                game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
+            }
         }      
 
         protected override void Draw(GameTime gameTime)
