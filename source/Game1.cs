@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using TiledSharp;
 using AIGame.source.Flocking;
+using AIGame.source.StateMachineNS;
 using AIGame.source.States;
 
 namespace AIGame.source
@@ -21,8 +22,15 @@ namespace AIGame.source
         public static float screenHeight;
 
         private PlayingGame game;
+        private MainMenu mainMenu;
 
-        private StateMachine stateMachine;
+        private enum State
+        {
+            MainMenu,
+            PlayingGame,
+        }
+
+        State state = State.MainMenu;
 
         public static GameTime LastGameTime { get; private set; } = null;
 
@@ -55,29 +63,53 @@ namespace AIGame.source
             
             renderTarget = new RenderTarget2D(GraphicsDevice, 960, 850);
 
-            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
-
-            stateMachine = new StateMachine(game, new Dictionary<State, List<(Transition, State)>>());
+            mainMenu = new MainMenu(Content, GraphicsDevice, _spriteBatch, renderTarget);
         }
 
         protected override void Update(GameTime gameTime)
         {
             LastGameTime = gameTime;
-            stateMachine.Update();
-            if (game.Reset)
+            switch (state)
             {
-                game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
+                case State.MainMenu:
+                    {
+                        mainMenu.Update();
+                        if (mainMenu.StartGame)
+                        {
+                            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
+                            state = State.PlayingGame; 
+                        }
+                        break;
+                    }
+                case State.PlayingGame:
+                    {
+                        game.Update();
+                        if (game.Reset)
+                        {
+                            mainMenu = new MainMenu(Content, GraphicsDevice, _spriteBatch, renderTarget);
+                            state = State.MainMenu;
+                        }
+                        break;
+                    }
             }
         }      
 
         protected override void Draw(GameTime gameTime)
         {
-            game.Draw(gameTime);
+            switch (state)
+            {
+                case State.MainMenu:
+                    {
+                        mainMenu.Draw();
+                        break;
+                    }
+                case State.PlayingGame:
+                    {
+                        game.Draw(gameTime);
+                        break;
+                    }
+            }
             base.Draw(gameTime);
         }
-
-       
-
-
     }   
 }

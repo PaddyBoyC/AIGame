@@ -9,11 +9,11 @@ using AIGame.source.Flocking;
 using Apos.Gui;
 using System.Reflection.Metadata;
 using Microsoft.Xna.Framework.Content;
-using AIGame.source.States;
+using AIGame.source.StateMachineNS;
 
 namespace AIGame.source
 {
-    public class PlayingGame : State
+    public class PlayingGame
     {
         public bool Reset { get; private set; } = false;
 
@@ -92,8 +92,7 @@ namespace AIGame.source
 
         #endregion
 
-        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget) :
-            base(null)
+        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget)
         {
             _spriteBatch = spriteBatch;
             this.renderTarget = renderTarget;
@@ -407,7 +406,7 @@ namespace AIGame.source
 
         }
 
-        public override void OnUpdate()
+        public void Update()
         {
             GameTime gameTime = Game1.LastGameTime;
             float screenWidth = Game1.screenWidth;
@@ -538,8 +537,8 @@ namespace AIGame.source
                     var temp_hitbox = new
                        Rectangle((int)player.position.X + 15, //both these numbers change where the bullet shoots from
                                  (int)player.position.Y + 15,
-                                 (int)bulletTexture.Width,
-                                 (int)bulletTexture.Height);
+                                 bulletTexture.Width,
+                                 bulletTexture.Height);
                     if (player.effects == SpriteEffects.None)
                     {
                         bullets.Add(new Bullet(bulletTexture, 4, temp_hitbox));
