@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source.States
+namespace AIGame.source.StateMachineNS
 {
     internal abstract class Transition
     {
@@ -17,7 +17,7 @@ namespace AIGame.source.States
 
         public abstract bool ToTransition();
 
-        public object GetOwner() 
+        public object GetOwner()
         {
             return owner;
         }

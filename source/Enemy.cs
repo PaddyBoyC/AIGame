@@ -1,4 +1,5 @@
 ﻿using AIGame.source;
+using AIGame.source.StateMachineNS;
 using AIGame.source.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,7 +68,6 @@ namespace AIGame.source
         public override void Update(GameTime gameTime)
         {
             stateMachine.Update();
-
         }
 
         public void UpdatePatrolling()

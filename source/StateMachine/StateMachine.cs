@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source.States
+namespace AIGame.source.StateMachineNS
 {
     internal class StateMachine
     {
         State currentState;
 
-        Dictionary<State, List<(Transition, State)>> stateTransitions = new ();
+        Dictionary<State, List<(Transition, State)>> stateTransitions = new();
 
         public StateMachine(State currentState, Dictionary<State, List<(Transition, State)>> stateTransitions)
         {

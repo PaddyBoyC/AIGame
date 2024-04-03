@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source.States
+namespace AIGame.source.StateMachineNS
 {
-    internal class State
+    public class State
     {
         object owner;
-        
+
         public State(object pOwner)
         {
             owner = pOwner;
