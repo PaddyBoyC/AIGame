@@ -55,6 +55,7 @@ namespace AIGame.source
         private int player_health = 10;
         private int time_between_hurt = 20;
         private int hit_counter = 0;
+        private bool attractMode = false;
         #endregion
 
         #region Enemy
@@ -90,11 +91,11 @@ namespace AIGame.source
 
         #endregion
 
-        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget)
+        public PlayingGame(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, bool attractMode = false)
         {
             _spriteBatch = spriteBatch;
-            this.renderTarget = renderTarget;
             this.GraphicsDevice = GraphicsDevice;
+            this.attractMode = attractMode;
 
             blackSquare = Content.Load<Texture2D>("blacksquare");
 
@@ -410,67 +411,70 @@ namespace AIGame.source
             float screenHeight = Game1.screenHeight;
 
             #region UI
-
-            Panel.Push().XY = new Vector2(0, 0);
-            if (!gameOver && !gameOverWin)
+            if (!attractMode)
             {
-                Label.Put($"Spiders vanquished: {spidersKilled}");
-                Label.Put($"Health: {player_health}");
-                //Label.Put($"pos {player.position}"); //debug only
+                Panel.Push().XY = new Vector2(0, 0);
+                if (!gameOver && !gameOverWin)
+                {
+                    Label.Put($"Spiders vanquished: {spidersKilled}");
+                    Label.Put($"Health: {player_health}");
+                    //Label.Put($"pos {player.position}"); //debug only
+                }
+                Panel.Pop();
+
+                Panel.Push().XY = new Vector2(screenWidth / 2 - 130, screenHeight / 2 - 200);
+                if (player_health <= 0)
+                {
+                    player.playerSpeed = 0;
+                    player_health = 0;
+                    Label.Put("You Fainted!");
+                    Panel.Pop();
+
+                    Panel.Push().XY = new Vector2(screenWidth / 2 - 320, screenHeight / 2 - 100);
+                    Label.Put("Press Enter to retreat to the surface...");
+                    Panel.Pop();
+
+                    Panel.Push().XY = new Vector2(screenWidth / 2 - 230, screenHeight / 2);
+                    Label.Put("Press Esc to exit the game");
+                    Panel.Pop();
+
+                    fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
+                    if (fadeAmount > 1)
+                    {
+                        fadeAmount = 1;
+                    }
+                    gameOver = true;
+                    if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                    {
+                        Reset = true;
+                    }
+                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    {
+                        //Exit();
+                    }
+                }
+
+                Panel.Push().XY = new Vector2(screenWidth / 2 - 300, screenHeight / 2 - 200); //this isn't working as expected
+                if (gameOverWin)
+                {
+                    player.playerSpeed = 0;
+                    fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
+
+
+                    Label.Put("To be continued...?");
+                    Panel.Pop();
+
+                    Panel.Push().XY = new Vector2(screenWidth / 2 - 800, screenHeight / 2 - 100);
+                    Label.Put($"Spiders Vanquished: {spidersKilled}");
+                    Panel.Pop();
+
+                    if (fadeAmount > 1)
+                    {
+                        fadeAmount = 1;
+                    }
+                }
             }
-            Panel.Pop();
-
-            Panel.Push().XY = new Vector2(screenWidth / 2 - 130, screenHeight / 2 - 200);
-            if (player_health <= 0)
-            {
-                player.playerSpeed = 0;
-                player_health = 0;
-                Label.Put("You Fainted!");
-                Panel.Pop();
-
-                Panel.Push().XY = new Vector2(screenWidth / 2 - 320, screenHeight / 2 - 100);
-                Label.Put("Press Enter to retreat to the surface...");
-                Panel.Pop();
-
-                Panel.Push().XY = new Vector2(screenWidth / 2 - 230, screenHeight / 2);
-                Label.Put("Press Esc to exit the game");
-                Panel.Pop();
-
-                fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
-                if (fadeAmount > 1)
-                {
-                    fadeAmount = 1;
-                }
-                gameOver = true;
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                {
-                    Reset = true;
-                }
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                {
-                    //Exit();
-                }
-            }
-
-            Panel.Push().XY = new Vector2(screenWidth / 2 - 300, screenHeight / 2 - 200); //this isn't working as expected
-            if (gameOverWin)
-            {
-                player.playerSpeed = 0;
-                fadeAmount += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
-
-
-                Label.Put("To be continued...?");
-                Panel.Pop();
-
-                Panel.Push().XY = new Vector2(screenWidth / 2 - 800, screenHeight / 2 - 100);
-                Label.Put($"Spiders Vanquished: {spidersKilled}");
-                Panel.Pop();
-
-                if (fadeAmount > 1)
-                {
-                    fadeAmount = 1;
-                }
-            }
+            
             #endregion
 
             #region Enemy
@@ -575,26 +579,30 @@ namespace AIGame.source
             #endregion
 
             #region Player
-            player.Update(gameTime);
-
-            //check for picking up inventory object
-            HashSet<InventoryObject> overlappingObjects = new();
-            foreach (var obj in levelObjects)
+            if (!attractMode)
             {
-                if (player.hitbox.Intersects(obj.hitbox))
+                player.Update(gameTime);
+
+                //check for picking up inventory object
+                HashSet<InventoryObject> overlappingObjects = new();
+                foreach (var obj in levelObjects)
                 {
-                    overlappingObjects.Add(obj);
-                    player.AddToInventory(obj);
+                    if (player.hitbox.Intersects(obj.hitbox))
+                    {
+                        overlappingObjects.Add(obj);
+                        player.AddToInventory(obj);
+                    }
+                }
+                foreach (var obj in overlappingObjects)
+                {
+                    levelObjects.Remove(obj);
+                }
+                if (player.hitbox.Intersects(endZone))
+                {
+                    gameOverWin = true;
                 }
             }
-            foreach (var obj in overlappingObjects)
-            {
-                levelObjects.Remove(obj);
-            }
-            if (player.hitbox.Intersects(endZone))
-            {
-                gameOverWin = true;
-            }
+            
             #endregion
 
             #region FakeFloors
@@ -624,17 +632,10 @@ namespace AIGame.source
         public void Draw(GameTime gameTime)
         {
             DrawLevel(gameTime);
-
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-
-            _spriteBatch.Draw(renderTarget, new Vector2(0, 0), null, Color.White, 0f, new Vector2(), 2f, SpriteEffects.None, 0);
-
-            _spriteBatch.End();
         }
 
         public void DrawLevel(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin(transformMatrix: transformMatrix);
@@ -693,8 +694,10 @@ namespace AIGame.source
             #endregion
 
             #region Player
-            player.Draw(_spriteBatch, gameTime);
-
+            if (!attractMode)
+            {
+                player.Draw(_spriteBatch, gameTime);
+            }
             #region Bullets
             foreach (var bullet in bullets.ToArray())
             {
@@ -712,8 +715,6 @@ namespace AIGame.source
                 _spriteBatch.Draw(blackSquare, new Rectangle(0, 0, (int)Game1.screenWidth, (int)Game1.screenHeight), Color.White * fadeAmount); //fades to black when dead
                 _spriteBatch.End();
             }
-
-            GraphicsDevice.SetRenderTarget(null);
         }
 
         public struct LevelCollisionResult

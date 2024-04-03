@@ -51,6 +51,8 @@ namespace AIGame.source
             screenWidth = _graphics.PreferredBackBufferWidth;
             base.Initialize();
             _ui = new IMGUI();
+            //create attract mode game
+            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, attractMode: true);
         }
 
         protected override void LoadContent()
@@ -81,10 +83,11 @@ namespace AIGame.source
             {
                 case State.MainMenu:
                     {
+                        game.Update();
                         mainMenu.Update();
                         if (mainMenu.StartGame)
                         {
-                            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, renderTarget);
+                            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch);
                             state = State.PlayingGame; 
                         }
                         break;
@@ -95,6 +98,7 @@ namespace AIGame.source
                         if (game.Reset)
                         {
                             mainMenu = new MainMenu(Content, GraphicsDevice, _spriteBatch, renderTarget);
+                            game = new PlayingGame(Content, GraphicsDevice, _spriteBatch, attractMode: true);
                             state = State.MainMenu;
                         }
                         break;
@@ -105,10 +109,13 @@ namespace AIGame.source
 
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.SetRenderTarget(renderTarget);
+
             switch (state)
             {
                 case State.MainMenu:
                     {
+                        game.Draw(gameTime);
                         mainMenu.Draw();
                         break;
                     }
@@ -118,6 +125,11 @@ namespace AIGame.source
                         break;
                     }
             }
+            GraphicsDevice.SetRenderTarget(null);
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Draw(renderTarget, new Vector2(0, 0), null, Color.White, 0f, new Vector2(), 2f, SpriteEffects.None, 0);
+            _spriteBatch.End();
 
             _ui.Draw(gameTime);
             base.Draw(gameTime);
