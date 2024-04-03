@@ -39,6 +39,15 @@ namespace AIGame.source
             {
                 StartGame = true;
             }
+
+            float screenWidth = Game1.screenWidth;
+            float screenHeight = Game1.screenHeight;
+
+            Panel.Push().XY = new Vector2(screenWidth / 2 - 130, screenHeight / 2 - 200);
+
+            Label.Put("Press space to start");
+
+            Panel.Pop();
         }
 
         public void Draw()

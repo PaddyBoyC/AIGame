@@ -1,5 +1,4 @@
-﻿using FontStashSharp;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -23,8 +22,7 @@ namespace AIGame.source
         private bool gameOverWin = false;
 
         private Rectangle endZone;
-
-        IMGUI _ui;
+     
         SpriteBatch _spriteBatch;
         private RenderTarget2D renderTarget;
 
@@ -99,7 +97,6 @@ namespace AIGame.source
             this.GraphicsDevice = GraphicsDevice;
 
             blackSquare = Content.Load<Texture2D>("blacksquare");
-            _ui = new IMGUI();
 
             #region Tilemap
             map = new TmxMap("Content\\mainlevel2.tmx");
@@ -413,9 +410,6 @@ namespace AIGame.source
             float screenHeight = Game1.screenHeight;
 
             #region UI
-            GuiHelper.UpdateSetup(gameTime);
-
-            _ui.UpdateAll(gameTime);
 
             Panel.Push().XY = new Vector2(0, 0);
             if (!gameOver && !gameOverWin)
@@ -477,8 +471,6 @@ namespace AIGame.source
                     fadeAmount = 1;
                 }
             }
-
-            GuiHelper.UpdateCleanup();
             #endregion
 
             #region Enemy
@@ -638,7 +630,6 @@ namespace AIGame.source
             _spriteBatch.Draw(renderTarget, new Vector2(0, 0), null, Color.White, 0f, new Vector2(), 2f, SpriteEffects.None, 0);
 
             _spriteBatch.End();
-            _ui.Draw(gameTime);
         }
 
         public void DrawLevel(GameTime gameTime)

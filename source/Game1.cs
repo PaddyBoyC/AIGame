@@ -24,6 +24,7 @@ namespace AIGame.source
         private PlayingGame game;
         private MainMenu mainMenu;
 
+        IMGUI _ui;
         private enum State
         {
             MainMenu,
@@ -49,6 +50,7 @@ namespace AIGame.source
             screenHeight = _graphics.PreferredBackBufferHeight;
             screenWidth = _graphics.PreferredBackBufferWidth;
             base.Initialize();
+            _ui = new IMGUI();
         }
 
         protected override void LoadContent()
@@ -68,6 +70,12 @@ namespace AIGame.source
 
         protected override void Update(GameTime gameTime)
         {
+
+            #region UI
+            GuiHelper.UpdateSetup(gameTime);
+            _ui.UpdateAll(gameTime);
+            #endregion
+
             LastGameTime = gameTime;
             switch (state)
             {
@@ -92,6 +100,7 @@ namespace AIGame.source
                         break;
                     }
             }
+            GuiHelper.UpdateCleanup();
         }      
 
         protected override void Draw(GameTime gameTime)
@@ -109,6 +118,8 @@ namespace AIGame.source
                         break;
                     }
             }
+
+            _ui.Draw(gameTime);
             base.Draw(gameTime);
         }
     }   
