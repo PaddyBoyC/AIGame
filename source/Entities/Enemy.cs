@@ -1,5 +1,4 @@
-﻿using AIGame.source;
-using AIGame.source.StateMachineNS;
+﻿using AIGame.source.StateMachineNS;
 using AIGame.source.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
     public class Enemy : Entity
     {
@@ -22,7 +21,7 @@ namespace AIGame.source
         private Rectangle pathway;
         private float speed = 2;
         private bool reset = false;
-        private StateMachine stateMachine;  
+        private StateMachine stateMachine;
         private Player player;
         private State patrollingState;
         private State attackingState;
@@ -98,7 +97,7 @@ namespace AIGame.source
                 // check if new position is outside pathway
                 Vector2 newPos = position;
                 newPos.X += speed;
-                
+
                 Rectangle newHitbox = hitbox;
                 newHitbox.X = (int)newPos.X;
 

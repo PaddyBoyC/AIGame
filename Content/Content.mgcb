@@ -145,30 +145,6 @@
 /processorParam:TextureFormat=Color
 /build:flockingEnemy/snowbat_flying.png
 
-#begin flockingEnemy/snowbat_flying.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:flockingEnemy/snowbat_flying.png
-
-#begin flockingEnemy/snowbat_idle.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:flockingEnemy/snowbat_idle.png
-
 #begin flockingEnemy/snowbat_idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -447,6 +423,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:mainTileset/tilesetfull.png
+
+#begin MenuTitle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:MenuTitle.png
 
 #begin PixeloidSansBold-PKnYd.ttf
 /copy:PixeloidSansBold-PKnYd.ttf

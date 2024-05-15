@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
-    internal class Machete : InventoryObject
+    internal class Pickaxe : InventoryObject
     {
-        public Machete(Vector2 position, Texture2D sprite) :
+        public Pickaxe(Vector2 position, Texture2D sprite) :
             base(position, sprite)
         {
 
         }
-    } 
+    }
 }

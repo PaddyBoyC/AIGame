@@ -1,5 +1,4 @@
-﻿using AIGame.source;
-using AIGame.source.States;
+﻿using AIGame.source.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
@@ -7,11 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
     public class FakeFloor : Entity
     {
-        private Texture2D texture;      
+        private Texture2D texture;
         private Player player;
         private float yVel = 0;
         public bool Falling { get; set; } = false;
@@ -19,7 +18,7 @@ namespace AIGame.source
         public FakeFloor(Texture2D texture, Rectangle hitbox, Player player)
         {
             this.texture = texture;
-            
+
             position = new Vector2(hitbox.X, hitbox.Y);
             base.hitbox = hitbox;
 

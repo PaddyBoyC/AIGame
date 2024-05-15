@@ -9,6 +9,7 @@ using Apos.Gui;
 using System.Reflection.Metadata;
 using Microsoft.Xna.Framework.Content;
 using AIGame.source.StateMachineNS;
+using AIGame.source.Entities;
 
 namespace AIGame.source
 {

@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AIGame.source.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static AIGame.source.Entity;
+using static AIGame.source.Entities.Entity;
 
 namespace AIGame.source
 {

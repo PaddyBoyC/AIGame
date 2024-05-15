@@ -26,7 +26,7 @@ namespace AIGame.source
             {
                 target.Y = 1180;
             }
-        Vector3 translation = new Vector3(-target.X -target.Width/2,
+            Vector3 translation = new Vector3(-target.X -target.Width/2,
                                        -target.Y - target.Height/2, 0);
 
             Vector3 offset = new Vector3(Game1.screenWidth/4, (int)(Game1.screenHeight/4), 0);

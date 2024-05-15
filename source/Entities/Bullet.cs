@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
     public class Bullet
     {

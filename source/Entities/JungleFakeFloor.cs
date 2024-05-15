@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
     public class JungleFakeFloor : Entity
     {

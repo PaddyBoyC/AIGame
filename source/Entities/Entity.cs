@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AIGame.source
+namespace AIGame.source.Entities
 {
     public abstract class Entity
     {
