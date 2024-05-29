@@ -19,12 +19,16 @@ namespace AIGame.source
         SpriteBatch _spriteBatch;
         private RenderTarget2D renderTarget;
 
+        private Texture2D titleImage;
+
         GraphicsDevice GraphicsDevice;
         public MainMenu(ContentManager Content, GraphicsDevice GraphicsDevice, SpriteBatch spriteBatch, RenderTarget2D renderTarget)           
         {
             _spriteBatch = spriteBatch;
             this.renderTarget = renderTarget;
             this.GraphicsDevice = GraphicsDevice;
+
+            titleImage = Content.Load<Texture2D>("MenuTitle");
         }
 
         public void Update()
@@ -47,7 +51,9 @@ namespace AIGame.source
 
         public void Draw()
         {
-            
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(titleImage, new Rectangle(0, 0, 64*4, 64*4), Color.White);
+            _spriteBatch.End();
         }
     }
 }
