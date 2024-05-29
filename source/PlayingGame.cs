@@ -18,6 +18,7 @@ namespace AIGame.source
         public bool Reset { get; private set; } = false;
 
         private Texture2D blackSquare;
+
         private float fadeAmount = 0;
         private bool gameOver = false;
         private bool gameOverWin = false;
@@ -74,11 +75,11 @@ namespace AIGame.source
         #endregion
 
         #region Bat
-        private List<Bat> bats;
+        private List<Bird> bats;
         #endregion
 
         #region SnowBat
-        private List<SnowBat> snowBats;
+        private List<Bird> snowBats;
         #endregion
 
         #region Camera
@@ -383,7 +384,7 @@ namespace AIGame.source
             #region Bat
             List<(Texture2D, Texture2D)> batTextures = new List<(Texture2D, Texture2D)>();
             batTextures.Add((Content.Load<Texture2D>("flockingEnemy\\bat_idle"), Content.Load<Texture2D>("flockingEnemy\\bat_flying")));
-            bats = new List<Bat>();
+            bats = new List<Bird>();
 
             foreach (var o in map.ObjectGroups["BatSpawn"].Objects)
             {
@@ -395,7 +396,7 @@ namespace AIGame.source
             #region SnowBat
             List<(Texture2D, Texture2D)> snowbatTextures = new List<(Texture2D, Texture2D)>();
             snowbatTextures.Add((Content.Load<Texture2D>("flockingEnemy\\snowbat_idle"), Content.Load<Texture2D>("flockingEnemy\\snowbat_flying")));
-            snowBats = new List<SnowBat>();
+            snowBats = new List<Bird>();
 
             foreach (var o in map.ObjectGroups["SnowBatSpawn"].Objects)
             {
